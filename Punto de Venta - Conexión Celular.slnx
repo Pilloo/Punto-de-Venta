@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/Back-end/">
+    <Project Path="Auth/Auth.csproj" />
+  </Folder>
+  <Folder Name="/Front-end/">
+    <Project Path="PosApp/PosApp.csproj" Id="a6d9d8db-0a82-45b1-9abd-e2a0553a848a" />
+  </Folder>
+</Solution>
