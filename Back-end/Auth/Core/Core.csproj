@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+
+
+    <ItemGroup>
+        <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    </ItemGroup>
+
+
+
+    <ItemGroup>
+      <PackageReference Include="MediatR" Version="14.1.0" />
+      <PackageReference Include="Scalar.AspNetCore" Version="2.14.4" />
+    </ItemGroup>
+
+
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\..\ErrorHandling\ErrorHandling.csproj" />
+      <ProjectReference Include="..\..\..\Shared\DTOs\DTOs.csproj" />
+      <ProjectReference Include="..\..\..\Shared\Models\Models.csproj" />
+    </ItemGroup>
+
+</Project>

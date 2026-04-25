@@ -1,8 +1,18 @@
 <Solution>
-  <Folder Name="/Back-end/">
-    <Project Path="Auth/Auth.csproj" />
+  <Folder Name="/Back-end/" />
+  <Folder Name="/Back-end/Auth Service/">
+    <Project Path="Back-end/Auth/Core/Core.csproj" Id="6a01967d-d97d-4861-a434-ae92a8dc15a7" />
+    <Project Path="Back-end/Auth/Infrastructure/Infrastructure.csproj" Id="c6b4d134-1be0-49eb-b924-25d66bdc1013" />
+    <Project Path="Back-end/Auth/Presentation/Presentation.csproj" />
+  </Folder>
+  <Folder Name="/Back-end/Shared/">
+    <Project Path="ErrorHandling/ErrorHandling.csproj" Id="fe50938e-0f5e-485d-8ddd-aab54e7cbb47" />
   </Folder>
   <Folder Name="/Front-end/">
-    <Project Path="PosApp/PosApp.csproj" Id="a6d9d8db-0a82-45b1-9abd-e2a0553a848a" />
+    <Project Path="Front-end/PosApp/PosApp.csproj" Id="1513ea57-005b-462d-b840-e2d84431515e" />
+  </Folder>
+  <Folder Name="/Shared/">
+    <Project Path="Shared/DTOs/DTOs.csproj" Id="b5477e9c-7bf2-4ac1-a01b-ae0c10a18bd7" />
+    <Project Path="Shared/Models/Models.csproj" Id="f6467f12-50cf-4972-b337-a5db101177ac" />
   </Folder>
 </Solution>
