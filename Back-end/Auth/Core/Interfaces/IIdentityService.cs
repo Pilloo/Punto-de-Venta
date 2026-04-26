@@ -5,5 +5,5 @@ namespace Core.Interfaces;
 public interface IIdentityService
 {
     Task<String> GenerateAccessTokenAsync(User user);
-    Task<String> GenerateRefreshTokenAsync();
+    Task<String> GenerateRefreshTokenAsync(User user, CancellationToken ct);
 }

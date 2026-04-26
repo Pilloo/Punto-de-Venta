@@ -18,7 +18,7 @@ namespace Infrastructure.Services
             }
 
             string pemContent = File.ReadAllText(keyPath);
-            ecdsaKey.ImportFromPem(keyPath);
+            ecdsaKey.ImportFromPem(pemContent);
 
             return ecdsaKey;
         }

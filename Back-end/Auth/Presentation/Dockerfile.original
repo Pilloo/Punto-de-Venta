@@ -13,11 +13,6 @@ FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["Back-end/Auth/Presentation/Presentation.csproj", "Back-end/Auth/Presentation/"]
-COPY ["ErrorHandling/ErrorHandling.csproj", "ErrorHandling/"]
-COPY ["Shared/Models/Models.csproj", "Shared/Models/"]
-COPY ["Back-end/Auth/Core/Core.csproj", "Back-end/Auth/Core/"]
-COPY ["Shared/DTOs/DTOs.csproj", "Shared/DTOs/"]
-COPY ["Back-end/Auth/Infrastructure/Infrastructure.csproj", "Back-end/Auth/Infrastructure/"]
 RUN dotnet restore "./Back-end/Auth/Presentation/Presentation.csproj"
 COPY . .
 WORKDIR "/src/Back-end/Auth/Presentation"

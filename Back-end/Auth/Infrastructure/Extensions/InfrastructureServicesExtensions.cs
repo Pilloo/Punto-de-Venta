@@ -15,7 +15,7 @@ public static class InfrastructureServicesExtensions
         services.AddDbContext<AuthDbContext>(
             options =>
             {
-                options.UseSqlServer(configuration.GetConnectionString("AuthDb"));
+                options.UseSqlServer(configuration.GetConnectionString("AuthDataBase"));
             });
 
         services.AddTransient<IIdentityService, IdentityService>();

@@ -24,10 +24,10 @@ namespace Presentation.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(errorFactory.CreateProblemDetails(new ValidationFailed(ModelState)));
+                return BadRequest(errorFactory.Create(new ValidationFailed(ModelState)));
             }
 
-            var response = await mediator.Send(loginCommand, cancellationToken);
+            Result<LoginResponse> response = await mediator.Send(loginCommand, cancellationToken);
 
             if (!response.IsSuccess)
             {
@@ -39,6 +39,35 @@ namespace Presentation.Controllers
             }
 
             return Ok(response.Value);
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        [Route("create-user")]
+        [EndpointDescription("Creates a user based on the provided credentials.")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
+        public async Task<IActionResult> Register([FromBody] RegisterCommand registerCommand, CancellationToken cancellationToken)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(errorFactory.Create(new ValidationFailed(ModelState)));
+            }
+
+            Result<Unit> response = await mediator.Send(registerCommand, cancellationToken);
+
+            if (!response.IsSuccess)
+            {
+                return response.Error!.Status switch
+                {
+                    (int)ErrorCodes.Conflict => Conflict(response.Error),
+                    (int)ErrorCodes.BadRequest => BadRequest(response.Error),
+                    _ => StatusCode((int)response.Error.Status!, response.Error)
+                };
+            }
+
+            return Ok();
         }
     }
 }

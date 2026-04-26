@@ -1,4 +1,5 @@
 ﻿
+using Core.Domain;
 using Core.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -17,29 +18,19 @@ namespace Infrastructure.Services
         private readonly ICryptoService _cryptoService;
         private readonly ECDsa _pubKey;
         private readonly ECDsa _privKey;
-        private readonly TokenValidationParameters _validationParameters;
         private readonly SigningCredentials _signinCredentials;
+        private readonly IRefreshTokenRepository _refreshTokenRepository;
 
-        public IdentityService(IConfiguration configuration, ICryptoService cryptoService, ILogger<IdentityService> logger)
+        public IdentityService(IConfiguration configuration, ICryptoService cryptoService, ILogger<IdentityService> logger, IRefreshTokenRepository refreshTokenRepository)
         {
             _configuration = configuration;
             _logger = logger;
             _cryptoService = cryptoService;
+            _refreshTokenRepository = refreshTokenRepository;
 
             _pubKey = _cryptoService.LoadEcdsaKey(_configuration["Jwt:PublicKeyPath"]!);
             _privKey = _cryptoService.LoadEcdsaKey(_configuration["Jwt:PrivateKeyPath"]!);
             _signinCredentials = new SigningCredentials(new ECDsaSecurityKey(_privKey), SecurityAlgorithms.EcdsaSha256);
-
-            _validationParameters = new TokenValidationParameters()
-            {
-                ValidateIssuer = true,
-                ValidateAudience = true,
-                ValidateLifetime = true,
-                ValidateIssuerSigningKey = true,
-                IssuerSigningKey = new ECDsaSecurityKey(_pubKey),
-                ValidAlgorithms
-
-            };
         }
 
         /// <summary>
@@ -87,13 +78,37 @@ namespace Infrastructure.Services
         /// Generates a cryptographically secure refresh token as a Base64-encoded string.
         /// </summary>
         /// <returns>A Base64-encoded string representing a securely generated refresh token.</returns>
-        public async Task<string> GenerateRefreshTokenAsync()
+        public async Task<string> GenerateRefreshTokenAsync(User user, CancellationToken ct)
         {
-            Span<byte> randomBytes = stackalloc byte[64];
+            try
+            {
+                Span<byte> randomBytes = stackalloc byte[64];
+                RandomNumberGenerator.Fill(randomBytes);
+                string base64Token = Convert.ToBase64String(randomBytes);
 
-            RandomNumberGenerator.Fill(randomBytes);
+                RefreshToken tokenEntity = new RefreshToken
+                {
+                    UserId = user.Id,
+                    Token = base64Token,
+                    ExpiresAt = DateTime.UtcNow.AddDays(7),
+                    IsRevoked = false,
+                    CreatedAt = DateTime.UtcNow,
+                };
 
-            return await Task.FromResult(Convert.ToBase64String(randomBytes));
+                await _refreshTokenRepository.SaveRefreshTokenAsync(tokenEntity, ct);
+
+                return base64Token;
+            }
+            catch (OperationCanceledException op)
+            {
+                _logger.LogInformation("Operation canceled!");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                throw;
+            }
         }
     }
 }

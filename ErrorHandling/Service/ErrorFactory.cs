@@ -5,7 +5,7 @@ using Microsoft.Extensions.Configuration;
 namespace ErrorHandling.Service;
 
 /// <summary>
-/// Service for creating RFC 7807 compliant <see cref="ProblemDetails"/> responses from <see cref="InternalError"/> instances.
+/// Service for creating RFC 7807 compliant <see cref="ProblemDetails"/> responses from <see cref="ErrorMessage"/> instances.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -34,12 +34,12 @@ public class ErrorFactory
     }
 
     /// <summary>
-    /// Creates an RFC 7807 compliant <see cref="ProblemDetails"/> response from an <see cref="InternalError"/>.
+    /// Creates an RFC 7807 compliant <see cref="ProblemDetails"/> response from an <see cref="ErrorMessage"/>.
     /// </summary>
     /// <param name="error">The domain error to convert.</param>
     /// <returns>A fully configured <see cref="ProblemDetails"/> response.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="error"/> is null.</exception>
-    public ProblemDetails CreateProblemDetails(InternalError error)
+    public ProblemDetails Create(ErrorMessage error)
     {
         if (error == null)
         {

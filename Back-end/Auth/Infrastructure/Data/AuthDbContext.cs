@@ -2,12 +2,13 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Core.Domain;
+using Microsoft.AspNetCore.Identity;
 
 namespace Infrastructure.Data
 {
-    public class AuthDbContext(DbContextOptions<AuthDbContext> options) : IdentityDbContext<User>
+    public class AuthDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
     {
-        public DbSet<User> Users { get; set; }
+        public AuthDbContext(DbContextOptions<AuthDbContext> options) : base(options) { }
 
         public DbSet<RefreshToken> RefreshTokens { get; set; }
 
@@ -23,6 +24,11 @@ namespace Infrastructure.Data
             builder.Entity<User>().Ignore(x => x.TwoFactorEnabled);
             builder.Entity<User>().Ignore(x => x.PhoneNumber);
             builder.Entity<User>().Ignore(x => x.PhoneNumberConfirmed);
+
+            builder.Entity<RefreshToken>()
+                   .HasOne<User>()
+                   .WithMany()
+                   .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

@@ -12,7 +12,7 @@ namespace ErrorHandling;
 /// It can be converted to <see cref="ProblemDetails"/> for HTTP responses.
 /// </para>
 /// </remarks>
-public abstract record InternalError
+public abstract record ErrorMessage
 {
     /// <summary>
     /// Gets the error classification code.
@@ -42,13 +42,13 @@ public abstract record InternalError
     public Dictionary<string, object>? Extensions { get; init; }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="InternalError"/> record.
+    /// Initializes a new instance of the <see cref="ErrorMessage"/> record.
     /// </summary>
     /// <param name="Code">The error category from <see cref="ErrorCodes"/>.</param>
     /// <param name="Title">A human-readable summary of the error.</param>
     /// <param name="Detail">Additional details about the error (optional).</param>
     /// <param name="Extensions">Additional error metadata as key-value pairs (optional).</param>
-    protected InternalError(
+    protected ErrorMessage(
         ErrorCodes Code,
         string Title,
         string? Detail = null,
