@@ -18,21 +18,14 @@ namespace Core
     );
 
     /// <summary>
-    /// Represents a validation error containing detailed field-specific error messages.
+    /// Represents a validation failure error that contains details about one or more validation errors associated with
+    /// specific fields or properties.
     /// </summary>
-    /// <param name="validationErrors">The <see cref="ModelStateDictionary"/> containing validation errors.</param>
-    /// <remarks>
-    /// <para>
-    /// Transforms <see cref="ModelStateDictionary"/> errors into RFC 7807 compliant format.
-    /// The <see cref="ErrorMessage.Extensions"/> property contains detailed validation messages:
-    /// </para>
-    /// <para>
-    /// Empty or null error messages are automatically filtered out.
-    /// </para>
-    /// <para>
-    /// Corresponds to HTTP 400 Bad Request status code.
-    /// </para>
-    /// </remarks>
+    /// <remarks>This record is typically used to convey validation errors resulting from model binding or
+    /// identity operations. The errors are structured to allow clients to associate error messages with specific input
+    /// fields, facilitating user feedback and error handling in client applications.</remarks>
+    /// <param name="errors">A dictionary containing validation errors, where each key is the name of the field or property with an error,
+    /// and the value is either a single error message or a list of error messages for that field.</param>
     public record ValidationFailed(Dictionary<string, object> errors) : ErrorMessage
     (
         Code: ErrorCodes.BadRequest,
@@ -76,6 +69,18 @@ namespace Core
     );
 
     /// <summary>
+    /// Represents an error message indicating that the specified user was not found.
+    /// </summary>
+    /// <remarks>Use this error type to signal that a user lookup operation did not locate a matching user.
+    /// This message is typically returned when search parameters do not correspond to any existing user
+    /// records.</remarks>
+    public record UserNotFound() : ErrorMessage(
+        Code: ErrorCodes.NotFound,
+        Title: "Usuario no encontrado.",
+        Detail: "El usuario solicitado no fue encontrado. Revise los parámetros de búsqueda e intente de nuevo."
+    );
+
+    /// <summary>
     /// Represents an error message indicating that the provided refresh token is invalid or does not exist.
     /// </summary>
     /// <remarks>This record is typically used to signal authentication failures where the user's session or
@@ -96,5 +101,17 @@ namespace Core
         Code: ErrorCodes.InternalError,
         Title: "Error de servidor.",
         Detail: "Ha sucedido un error al procesar su solicitud. Por favor, intente la operación en un momento."
+    );
+
+    /// <summary>
+    /// Represents an error indicating that a server-side operation was cancelled or did not complete within the expected timeframe.
+    /// </summary>
+    /// <remarks>This error is typically returned when an operation times out, is interrupted, or is explicitly cancelled on the server.
+    /// Common causes include request timeouts during long-running operations or when the server terminates a request due to resource constraints
+    /// or system shutdown. Clients may retry the operation, but should implement appropriate backoff strategies to avoid overwhelming the server.</remarks>
+    public record OperationCanceled() : ErrorMessage(
+        Code: ErrorCodes.InternalError,
+        Title: "Operación cancelada.",
+        Detail: "La operación fue cancelada. Si estimase que se trata de un error, intente realizar la operación nuevamente."
     );
 }

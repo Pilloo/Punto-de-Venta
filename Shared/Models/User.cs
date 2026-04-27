@@ -15,5 +15,8 @@ namespace Models
         [PersonalData]
         [MaxLength(256)]
         public string LastName { get; set; } = null!;
+
+        [Required]
+        public bool IsActive { get; set; } = true;
     }
 }

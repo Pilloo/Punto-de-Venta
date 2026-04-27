@@ -11,9 +11,9 @@ using Models;
 
 namespace Core.UseCases.Handlers
 {
-    public class RefreshAccessTokenHandler(IIdentityService identityService,
+    public class RefreshAccessTokenCommandHandler(IIdentityService identityService,
         IRefreshTokenRepository tokenRepository,
-        ILogger<RefreshAccessTokenHandler> logger,
+        ILogger<RefreshAccessTokenCommandHandler> logger,
         UserManager<User> userManager,
         ErrorFactory errorFactory)
     : IRequestHandler<RefreshAccessTokenCommand, Result<LoginResponse>>
@@ -59,7 +59,8 @@ namespace Core.UseCases.Handlers
             catch (OperationCanceledException)
             {
                 logger.LogInformation("Operation canceled for user id {userId}", command.UserId);
-                throw;
+
+                return Result<LoginResponse>.Failure(errorFactory.Create(new OperationCanceled()));
             }
             catch (Exception ex)
             {

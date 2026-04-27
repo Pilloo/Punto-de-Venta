@@ -58,7 +58,8 @@ namespace Core.UseCases.Handlers
             catch (OperationCanceledException)
             {
                 logger.LogInformation("Login operation canceled for user {Username}", command.Username);
-                throw;
+
+                return Result<LoginResponse>.Failure(errorFactory.Create(new OperationCanceled()));
             }
             catch (Exception ex)
             {

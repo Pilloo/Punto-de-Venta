@@ -21,6 +21,7 @@ namespace Infrastructure.Data
             builder.Entity<User>().Ignore(x => x.NormalizedEmail);
             builder.Entity<User>().Ignore(x => x.LockoutEnabled);
             builder.Entity<User>().Ignore(x => x.LockoutEnd);
+            builder.Entity<User>().Ignore(x => x.AccessFailedCount);
             builder.Entity<User>().Ignore(x => x.TwoFactorEnabled);
             builder.Entity<User>().Ignore(x => x.PhoneNumber);
             builder.Entity<User>().Ignore(x => x.PhoneNumberConfirmed);

@@ -3,6 +3,7 @@ using ErrorHandling;
 using ErrorHandling.Service;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Logging;
 using Models;
 using System;
 using System.Collections.Generic;
@@ -10,32 +11,47 @@ using System.Text;
 
 namespace Core.UseCases.Handlers
 {
-    public class RegisterCommandHandler(UserManager<User> userManager, ErrorFactory errorFactory) : IRequestHandler<RegisterCommand, Result<Unit>>
+    public class RegisterCommandHandler(UserManager<User> userManager, ErrorFactory errorFactory, ILogger<RegisterCommandHandler> logger) : IRequestHandler<RegisterCommand, Result<Unit>>
     {
         public async Task<Result<Unit>> Handle(RegisterCommand command, CancellationToken ct)
         {
-            if (await userManager.FindByNameAsync(command.UserName) != null)
+            try
             {
-                return Result<Unit>.Failure(errorFactory.Create(new UserNameAlreadyTaken()));
+                if (await userManager.FindByNameAsync(command.UserName) != null)
+                {
+                    return Result<Unit>.Failure(errorFactory.Create(new UserNameAlreadyTaken()));
+                }
+
+                User user = new User
+                {
+                    UserName = command.UserName,
+                    GivenName = command.GivenName,
+                    LastName = command.LastName
+                };
+
+                ct.ThrowIfCancellationRequested();
+
+                IdentityResult operationResult = await userManager.CreateAsync(user, command.Password);
+
+                if (!operationResult.Succeeded)
+                {
+                    return Result<Unit>.Failure(errorFactory.Create(new ValidationFailed(operationResult.Errors)));
+                }
+
+                return Result<Unit>.Success(Unit.Value);
             }
-
-            User user = new User
+            catch (OperationCanceledException)
             {
-                UserName = command.UserName,
-                GivenName = command.GivenName,
-                LastName = command.LastName
-            };
+                logger.LogInformation("Operation canceled for user register");
 
-            ct.ThrowIfCancellationRequested();
-
-            IdentityResult operationResult = await userManager.CreateAsync(user, command.Password);
-
-            if (!operationResult.Succeeded)
-            {
-                return Result<Unit>.Failure(errorFactory.Create(new ValidationFailed(operationResult.Errors)));
+                return Result<Unit>.Failure(errorFactory.Create(new OperationCanceled()));
             }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, ex.Message);
 
-            return Result<Unit>.Success(Unit.Value);
+                return Result<Unit>.Failure(errorFactory.Create(new InternalError()));
+            }
         }
     }
 }
