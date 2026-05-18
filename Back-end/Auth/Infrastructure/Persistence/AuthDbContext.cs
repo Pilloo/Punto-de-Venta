@@ -1,10 +1,10 @@
 ﻿using Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Core.Domain;
+using AuthModule.Core.Domain;
 using Microsoft.AspNetCore.Identity;
 
-namespace Infrastructure.Data
+namespace AuthModule.Infrastructure.Persistence
 {
     public class AuthDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
     {
@@ -15,6 +15,8 @@ namespace Infrastructure.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+
+            builder.Entity<User>().HasQueryFilter(q => q.IsActive);
 
             builder.Entity<User>().Ignore(x => x.Email);
             builder.Entity<User>().Ignore(x => x.EmailConfirmed);

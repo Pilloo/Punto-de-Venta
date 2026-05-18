@@ -1,9 +1,9 @@
-﻿using Core.Domain;
+﻿using AuthModule.Core.Domain;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Core.Interfaces
+namespace AuthModule.Core.Interfaces
 {
     public interface IRefreshTokenRepository
     {

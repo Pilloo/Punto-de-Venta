@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using ProblemDetails = Microsoft.AspNetCore.Mvc.ProblemDetails;
 using Microsoft.Extensions.Configuration;
+using System.Diagnostics;
 
 namespace ErrorHandling.Service;
 
@@ -54,6 +55,13 @@ public class ErrorFactory
             Status = (int)error.Code,
             Instance = _httpContextAccessor.HttpContext?.Request.Path,
         };
+
+        string? traceId = Activity.Current?.TraceId.ToHexString() ?? _httpContextAccessor.HttpContext?.TraceIdentifier.ToString();
+
+        if (!string.IsNullOrEmpty(traceId))
+        {
+            problemDetails.Extensions.Add("TraceID", traceId);
+        }
 
         if (error.Extensions != null)
         {

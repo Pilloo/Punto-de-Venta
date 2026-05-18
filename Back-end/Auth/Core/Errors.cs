@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Core
+namespace AuthModule.Core
 {
     /// <summary>
     /// Represents an error that occurs when authentication fails due to invalid credentials.
@@ -14,7 +14,7 @@ namespace Core
     (
         Code: ErrorCodes.Unauthorized,
         Title: "Credenciales inválidas.",
-        Detail: "Las credenciales ingresadas son inválidas. Por favor, revise los datos ingresados e intente de nuevo."
+        Detail: "Las credenciales ingresadas son inválidas. Por favor, revisa la información ingresada e intente de nuevo."
     );
 
     /// <summary>
@@ -88,7 +88,7 @@ namespace Core
     public record InvalidOrNonExistingToken() : ErrorMessage(
         Code: ErrorCodes.ValidationError,
         Title: "Información de acceso inválida o no existente",
-        Detail: "La información de acceso es inválida o no existente. Por favor, ingrese sesión nuevamente para continuar."
+        Detail: "La información de acceso es inválida o no existente. Por favor, inicie sesión nuevamente para continuar."
     );
 
     /// <summary>
@@ -113,5 +113,18 @@ namespace Core
         Code: ErrorCodes.InternalError,
         Title: "Operación cancelada.",
         Detail: "La operación fue cancelada. Si estimase que se trata de un error, intente realizar la operación nuevamente."
+    );
+
+    /// <summary>
+    /// Represents an error message indicating that the requested operation is not authorized due to insufficient
+    /// permissions.
+    /// </summary>
+    /// <remarks>Use this type to signal that an operation was denied because the caller lacks the necessary
+    /// credentials or authorization. The error includes a code, title, and detail message describing the unauthorized
+    /// access.</remarks>
+    public record UnauthorizedOperation() : ErrorMessage(
+        Code: ErrorCodes.Unauthorized,
+        Title: "Operación no autorizada.",
+        Detail: "No cuenta con los permisos para realizar la acción solicitada. Revise sus credenciales e intente de nuevo."
     );
 }

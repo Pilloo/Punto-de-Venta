@@ -1,5 +1,5 @@
-﻿using Core;
-using Core.UseCases.Commands;
+﻿using AuthModule.Core;
+using AuthModule.Core.Features;
 using DTOs;
 using ErrorHandling;
 using ErrorHandling.Service;
@@ -7,7 +7,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Presentation.Controllers
+namespace AuthModule.Presentation.Controllers
 {
     [Route("[controller]")]
     [ApiController]
@@ -17,9 +17,10 @@ namespace Presentation.Controllers
         [AllowAnonymous]
         [Route("login")]
         [EndpointDescription("Logs into an account using the provided credentials.")]
-        [ProducesResponseType<LoginResponse>(StatusCodes.Status200OK, Type = typeof(LoginResponse))]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(TokenDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Login([FromBody] LoginCommand loginCommand, CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid)
@@ -27,7 +28,7 @@ namespace Presentation.Controllers
                 return BadRequest(errorFactory.Create(new ValidationFailed(ModelState)));
             }
 
-            Result<LoginResponse> response = await mediator.Send(loginCommand, cancellationToken);
+            Result<TokenDto> response = await mediator.Send(loginCommand, cancellationToken);
 
             if (!response.IsSuccess)
             {
@@ -42,12 +43,12 @@ namespace Presentation.Controllers
         }
 
         [HttpPost]
-        [AllowAnonymous]
+        [Authorize]
         [Route("create-user")]
         [EndpointDescription("Creates a user based on the provided credentials.")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status409Conflict)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
         public async Task<IActionResult> Register([FromBody] RegisterCommand registerCommand, CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid)
@@ -70,11 +71,40 @@ namespace Presentation.Controllers
             return Ok();
         }
 
+        [HttpPatch]
+        [Authorize]
+        [Route("modify-user")]
+        [EndpointDescription("Modifies the user information.")]
+        [ProducesResponseType(typeof(TokenDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> ModifyUser([FromBody] ModifyUserCommand modifyUserCommand, CancellationToken cancellationToken)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(errorFactory.Create(new ValidationFailed(ModelState)));
+            }
+
+            Result<TokenDto> response = await mediator.Send(modifyUserCommand, cancellationToken);
+        
+            if (!response.IsSuccess)
+            {
+                return response.Error!.Status switch
+                {
+                    (int)ErrorCodes.NotFound => NotFound(response.Error),
+                    _ => StatusCode((int)response.Error.Status!, response.Error)
+                };
+            }
+
+            return Ok(response.Value);
+        }
+
         [HttpPost]
         [Authorize]
         [Route("refresh-token")]
         [EndpointDescription("Refreshes the access token and issues a new refresh token.")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(LoginResponse))]
+        [ProducesResponseType(typeof(TokenDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -85,7 +115,7 @@ namespace Presentation.Controllers
                 return BadRequest(errorFactory.Create(new ValidationFailed(ModelState)));
             }
 
-            Result<LoginResponse> response = await mediator.Send(refreshCommand, cancellationToken);
+            Result<TokenDto> response = await mediator.Send(refreshCommand, cancellationToken);
 
             if (!response.IsSuccess)
             {
@@ -98,5 +128,34 @@ namespace Presentation.Controllers
 
             return Ok(response.Value);
         }
+
+        [HttpPatch]
+        [Authorize]
+        [Route("set-user-status")]
+        [EndpointDescription("Sets the account status for a certain user.")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> SetUserStatus([FromBody] SetUserStatusCommand setUserStatusCommand, CancellationToken cancellationToken)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(errorFactory.Create(new ValidationFailed(ModelState)));
+            }
+
+            Result<Unit> response = await mediator.Send(setUserStatusCommand, cancellationToken);
+
+            if (!response.IsSuccess)
+            {
+                return response.Error!.Status switch
+                {
+                    (int)ErrorCodes.NotFound => NotFound(response.Error),
+                    _ => StatusCode((int)response.Error.Status!, response.Error)
+                };
+            }
+
+            return Ok();
+        }
     }
+
 }

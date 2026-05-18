@@ -1,6 +1,6 @@
 using System.Security.Cryptography;
 
-namespace Core.Interfaces;
+namespace AuthModule.Core.Interfaces;
 
 public interface ICryptoService
 {

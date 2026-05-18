@@ -1,6 +1,6 @@
 using Models;
 
-namespace Core.Interfaces;
+namespace AuthModule.Core.Interfaces;
 
 public interface IIdentityService
 {

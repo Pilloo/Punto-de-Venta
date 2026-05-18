@@ -3,7 +3,7 @@
     /// <summary>
     /// Represents the result of the Login command execution.
     /// </summary>
-    public class LoginResponse
+    public class TokenDto
     {
         /// <value>The JWT token generated.</value>
         public string AccessToken { get; set; } = string.Empty;

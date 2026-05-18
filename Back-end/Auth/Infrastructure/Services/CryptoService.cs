@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Security.Cryptography;
-using System.Text;
-using Core.Interfaces;
+﻿using System.Security.Cryptography;
+using AuthModule.Core.Interfaces;
 
-namespace Infrastructure.Services
+namespace AuthModule.Infrastructure.Services
 {
     public class CryptoService : ICryptoService
     {

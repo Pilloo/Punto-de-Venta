@@ -1,11 +1,12 @@
-﻿using Core.Interfaces;
-using Infrastructure.Data;
-using Infrastructure.Services;
+﻿using AuthModule.Core.Interfaces;
+using AuthModule.Infrastructure.Persistence;
+using AuthModule.Infrastructure.Repositiories;
+using AuthModule.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Infrastructure.Extensions;
+namespace AuthModule.Infrastructure.Extensions;
 
 public static class InfrastructureServicesExtensions
 {
@@ -21,7 +22,8 @@ public static class InfrastructureServicesExtensions
         services.AddTransient<IIdentityService, IdentityService>();
         services.AddTransient<ICryptoService, CryptoService>();
         services.AddTransient<IRefreshTokenRepository, RefreshTokenRepository>();
-
+        services.AddTransient<IUserRepository, UserRepository>();
+        
         return services;
     }
 }

@@ -1,6 +1,6 @@
 ﻿
-using Core.Domain;
-using Core.Interfaces;
+using AuthModule.Core.Interfaces;
+using AuthModule.Core.Domain;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
@@ -9,7 +9,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 
-namespace Infrastructure.Services
+namespace AuthModule.Infrastructure.Services
 {
     public class IdentityService : IIdentityService
     {

@@ -30,5 +30,8 @@ public enum ErrorCodes : int
     InternalError = 500,
 
     // Communication failure between services.
-    ServiceUnavailable = 503
+    ServiceUnavailable = 503,
+
+    // Operation cancelled by the user.
+    OperationCancelled = 499
 }
