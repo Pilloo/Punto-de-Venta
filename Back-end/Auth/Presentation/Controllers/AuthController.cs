@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AuthModule.Presentation.Controllers
 {
-    [Route("[controller]")]
+    [Route("/api/[controller]")]
     [ApiController]
     public class AuthController(IMediator mediator, ErrorFactory errorFactory) : Controller
     {
@@ -28,18 +28,18 @@ namespace AuthModule.Presentation.Controllers
                 return BadRequest(errorFactory.Create(new ValidationFailed(ModelState)));
             }
 
-            Result<TokenDto> response = await mediator.Send(loginCommand, cancellationToken);
+            Result<TokenDto> result = await mediator.Send(loginCommand, cancellationToken);
 
-            if (!response.IsSuccess)
+            if (!result.IsSuccess)
             {
-                return response.Error!.Status switch
+                return result.Error!.Status switch
                 {
-                    (int)ErrorCodes.Unauthorized => Unauthorized(response.Error),
-                    _ => StatusCode((int)response.Error.Status!, response.Error)
+                    (int)ErrorCodes.Unauthorized => Unauthorized(result.Error),
+                    _ => StatusCode((int)result.Error.Status!, result.Error)
                 };
             }
 
-            return Ok(response.Value);
+            return Ok(result.Value);
         }
 
         [HttpPost]
@@ -56,15 +56,15 @@ namespace AuthModule.Presentation.Controllers
                 return BadRequest(errorFactory.Create(new ValidationFailed(ModelState)));
             }
 
-            Result<Unit> response = await mediator.Send(registerCommand, cancellationToken);
+            Result<Unit> result = await mediator.Send(registerCommand, cancellationToken);
 
-            if (!response.IsSuccess)
+            if (!result.IsSuccess)
             {
-                return response.Error!.Status switch
+                return result.Error!.Status switch
                 {
-                    (int)ErrorCodes.Conflict => Conflict(response.Error),
-                    (int)ErrorCodes.BadRequest => BadRequest(response.Error),
-                    _ => StatusCode((int)response.Error.Status!, response.Error)
+                    (int)ErrorCodes.Conflict => Conflict(result.Error),
+                    (int)ErrorCodes.BadRequest => BadRequest(result.Error),
+                    _ => StatusCode((int)result.Error.Status!, result.Error)
                 };
             }
 
@@ -86,18 +86,18 @@ namespace AuthModule.Presentation.Controllers
                 return BadRequest(errorFactory.Create(new ValidationFailed(ModelState)));
             }
 
-            Result<TokenDto> response = await mediator.Send(modifyUserCommand, cancellationToken);
-        
-            if (!response.IsSuccess)
+            Result<TokenDto> result = await mediator.Send(modifyUserCommand, cancellationToken);
+
+            if (!result.IsSuccess)
             {
-                return response.Error!.Status switch
+                return result.Error!.Status switch
                 {
-                    (int)ErrorCodes.NotFound => NotFound(response.Error),
-                    _ => StatusCode((int)response.Error.Status!, response.Error)
+                    (int)ErrorCodes.NotFound => NotFound(result.Error),
+                    _ => StatusCode((int)result.Error.Status!, result.Error)
                 };
             }
 
-            return Ok(response.Value);
+            return Ok(result.Value);
         }
 
         [HttpPost]
@@ -105,9 +105,9 @@ namespace AuthModule.Presentation.Controllers
         [Route("refresh-token")]
         [EndpointDescription("Refreshes the access token and issues a new refresh token.")]
         [ProducesResponseType(typeof(TokenDto), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status422UnprocessableEntity)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> RefreshToken([FromBody] RefreshAccessTokenCommand refreshCommand, CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid)
@@ -115,18 +115,18 @@ namespace AuthModule.Presentation.Controllers
                 return BadRequest(errorFactory.Create(new ValidationFailed(ModelState)));
             }
 
-            Result<TokenDto> response = await mediator.Send(refreshCommand, cancellationToken);
+            Result<TokenDto> result = await mediator.Send(refreshCommand, cancellationToken);
 
-            if (!response.IsSuccess)
+            if (!result.IsSuccess)
             {
-                return response.Error!.Status switch
+                return result.Error!.Status switch
                 {
-                    (int)ErrorCodes.ValidationError => UnprocessableEntity(response.Error),
-                    _ => StatusCode((int)response.Error.Status!, response.Error)
+                    (int)ErrorCodes.ValidationError => UnprocessableEntity(result.Error),
+                    _ => StatusCode((int)result.Error.Status!, result.Error)
                 };
             }
 
-            return Ok(response.Value);
+            return Ok(result.Value);
         }
 
         [HttpPatch]
@@ -134,8 +134,8 @@ namespace AuthModule.Presentation.Controllers
         [Route("set-user-status")]
         [EndpointDescription("Sets the account status for a certain user.")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> SetUserStatus([FromBody] SetUserStatusCommand setUserStatusCommand, CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid)
@@ -143,18 +143,64 @@ namespace AuthModule.Presentation.Controllers
                 return BadRequest(errorFactory.Create(new ValidationFailed(ModelState)));
             }
 
-            Result<Unit> response = await mediator.Send(setUserStatusCommand, cancellationToken);
+            Result<Unit> result = await mediator.Send(setUserStatusCommand, cancellationToken);
 
-            if (!response.IsSuccess)
+            if (!result.IsSuccess)
             {
-                return response.Error!.Status switch
+                return result.Error!.Status switch
                 {
-                    (int)ErrorCodes.NotFound => NotFound(response.Error),
-                    _ => StatusCode((int)response.Error.Status!, response.Error)
+                    (int)ErrorCodes.NotFound => NotFound(result.Error),
+                    _ => StatusCode((int)result.Error.Status!, result.Error)
                 };
             }
 
             return Ok();
+        }
+
+        [HttpGet]
+        [Authorize]
+        [Route("get-active-users")]
+        [EndpointDescription("Returns the active user list.")]
+        [ProducesResponseType(typeof(IEnumerable<UserDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetActiveUsers(CancellationToken cancellationToken)
+        {
+            Result<IEnumerable<UserDto>> result = await mediator.Send(new GetActiveUsersQuery(), cancellationToken);
+
+            if (!result.IsSuccess)
+            {
+                return result.Error!.Status switch
+                {
+                    (int)ErrorCodes.NotFound => NotFound(result.Error),
+                    _ => StatusCode((int)result.Error.Status!, result.Error)
+                };
+            }
+
+            return Ok(result.Value);
+        }
+
+        [HttpGet]
+        [Authorize]
+        [Route("get-inactive-users")]
+        [EndpointDescription("Returns the active user list.")]
+        [ProducesResponseType(typeof(IEnumerable<UserDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetInactiveUsers(CancellationToken cancellationToken)
+        {
+            Result<IEnumerable<UserDto>> result = await mediator.Send(new GetInactiveUsersQuery(), cancellationToken);
+
+            if (!result.IsSuccess)
+            {
+                return result.Error!.Status switch
+                {
+                    (int)ErrorCodes.NotFound => NotFound(result.Error),
+                    _ => StatusCode((int)result.Error.Status!, result.Error)
+                };
+            }
+
+            return Ok(result.Value);
         }
     }
 

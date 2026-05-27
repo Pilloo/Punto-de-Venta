@@ -2,9 +2,11 @@
 using ErrorHandling;
 using ErrorHandling.Service;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Models;
 using System.ComponentModel.DataAnnotations;
+using System.Security.Claims;
 
 namespace AuthModule.Core.Features;
 
@@ -17,12 +19,18 @@ public class SetUserStatusCommand : IRequest<Result<Unit>>
 public class SetUserStatusCommandHandler(
     IUserRepository userRepository,
     ErrorFactory errorFactory,
+    IHttpContextAccessor httpContext,
     ILogger<SetUserStatusCommand> logger,
     IRefreshTokenRepository tokenRepository
 ) : IRequestHandler<SetUserStatusCommand, Result<Unit>>
 {
     public async Task<Result<Unit>> Handle(SetUserStatusCommand command, CancellationToken ct)
     {
+        if (httpContext.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier) == command.UserId.ToString())
+        {
+            return Result<Unit>.Failure(errorFactory.Create(new UserSelfStatusModificationViolation()));
+        }
+
         try
         {
             User? user = await userRepository.GetUserAsync(x => x.Id == command.UserId, false, ct);

@@ -8,7 +8,7 @@ namespace AuthModule.Core.Interfaces
 {
     public interface IUserRepository
     {
-        Task<User?> GetUsersAsync(Expression<Func<User, bool>> predicate, bool asNoTracking, CancellationToken ct);
+        Task<IEnumerable<User?>> GetUsersAsync(Expression<Func<User, bool>> predicate, bool asNoTracking, CancellationToken ct);
      
         Task<User?> GetUserAsync(Expression<Func<User, bool>> predicate, bool asNoTracking, CancellationToken ct);
 

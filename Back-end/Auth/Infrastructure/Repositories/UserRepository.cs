@@ -15,7 +15,7 @@ namespace AuthModule.Infrastructure.Repositiories
     /// </remarks>
     public class UserRepository(AuthDbContext context) : IUserRepository
     {
-        public async Task<IEnumerable<User>> GetUsersAsync(Expression<Func<User, bool>> predicate, bool asNoTracking, CancellationToken cancellationToken)
+        public async Task<IEnumerable<User?>> GetUsersAsync(Expression<Func<User, bool>> predicate, bool asNoTracking, CancellationToken cancellationToken)
         {
             try
             {

@@ -127,4 +127,26 @@ namespace AuthModule.Core
         Title: "Operación no autorizada.",
         Detail: "No cuenta con los permisos para realizar la acción solicitada. Revise sus credenciales e intente de nuevo."
     );
+
+    /// <summary>
+    /// Error message type indicating that modifying the current user's status is forbidden.
+    /// </summary>
+    /// <remarks>Produces an ErrorCodes.Forbidden result with a title and detail stating that the user cannot
+    /// change their own status and must use a different account to perform the change.</remarks>
+    public record UserSelfStatusModificationViolation() : ErrorMessage(
+        Code: ErrorCodes.Forbidden,
+        Title: "Acción no permitida sobre el usuario actual.",
+        Detail: "No puede modificar su propio estado de usuario. Para realizar este cambio, debe utilizar una cuenta distinta."
+    );
+
+    /// <summary>
+    /// Represents an error message returned when no active users are found.
+    /// </summary>
+    /// <remarks>Initializes with ErrorCodes.NotFound and default Spanish title and detail: "Usuarios activos
+    /// no encontrados" and "No se encontraron usuarios con estado activo en el sistema."</remarks>
+    public record ActiveUsersNotFound() : ErrorMessage(
+        Code: ErrorCodes.NotFound,
+        Title: "Usuarios activos no encontrados",
+        Detail: "No se encontraron usuarios con estado activo en el sistema."
+    );
 }

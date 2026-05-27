@@ -5,24 +5,26 @@ using ErrorHandling.Service;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using Models;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace AuthModule.Core.Features;
 
-public class GetUsersQuery : IRequest<Result<IEnumerable<UserDto>>>
+public class GetInactiveUsersQuery : IRequest<Result<IEnumerable<UserDto>>>
 {
 
 }
 
-public class GetActiveUsersQueryHandler(IUserRepository userRepository, ErrorFactory errorFactory, Logger<GetActiveUsersQueryHandler> logger) : IRequestHandler<GetUsersQuery, Result<IEnumerable<UserDto>>>
+public class GetInactiveUsersQueryHandler(IUserRepository userRepository, ErrorFactory errorFactory, ILogger<GetInactiveUsersQueryHandler> logger) : IRequestHandler<GetInactiveUsersQuery, Result<IEnumerable<UserDto>>>
 {
-    public async Task<Result<IEnumerable<UserDto>>> Handle(GetUsersQuery request, CancellationToken cancellationToken)
+    public async Task<Result<IEnumerable<UserDto>>> Handle(GetInactiveUsersQuery request, CancellationToken cancellationToken)
     {
         try
         {
-            IEnumerable<User> userList = await userRepository.GetUsersAsync(cancellationToken);
+            IEnumerable<User?> userList = await userRepository.GetUsersAsync(x => !x.IsActive, true, cancellationToken);
+
+            if (userList.Count() == 0)
+            {
+                return Result<IEnumerable<UserDto>>.Failure(errorFactory.Create(new ActiveUsersNotFound()));
+            }
 
             IEnumerable<UserDto> dtoList = from user in userList
                                            orderby user.LastName descending
@@ -31,7 +33,8 @@ public class GetActiveUsersQueryHandler(IUserRepository userRepository, ErrorFac
                                                UserId = user.Id,
                                                UserName = user.UserName!,
                                                GivenName = user.GivenName,
-                                               LastName = user.LastName
+                                               LastName = user.LastName,
+                                               IsActive = user.IsActive,
                                            };
 
             return Result<IEnumerable<UserDto>>.Success(dtoList);
@@ -48,6 +51,5 @@ public class GetActiveUsersQueryHandler(IUserRepository userRepository, ErrorFac
 
             return Result<IEnumerable<UserDto>>.Failure(errorFactory.Create(new InternalError()));
         }
-
     }
 }
