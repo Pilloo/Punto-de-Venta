@@ -18,7 +18,7 @@ using Serilog.Enrichers.Span;
 var builder = WebApplication.CreateBuilder(args);
 
 const string logTemplate = "[{@t:HH:mm:ss} {@l:u3}] {#if TraceId is not null}[Trace: {TraceId}] {#end}{@m}\n{@x}";
-ExpressionTemplate formatter = new ExpressionTemplate(logTemplate);
+ExpressionTemplate formatter = new(logTemplate);
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Is(!builder.Environment.IsProduction()
@@ -62,7 +62,7 @@ builder.Services.AddAuthentication(options =>
             ValidAudience = jwtOptions.GetValue<string>("Audience"),
             IssuerSigningKeyResolver = (token, securityToken, kid, parameters) =>
             {
-                ICryptoService cryptoService = new CryptoService();
+                CryptoService cryptoService = new();
                 ECDsa key = cryptoService.LoadEcdsaKey(jwtOptions.GetValue<string>("PublicKeyPath")!);
                 return [new ECDsaSecurityKey(key)];
             },

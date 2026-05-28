@@ -1,6 +1,6 @@
 {
-  "name": "PosApp",
-  "short_name": "PosApp",
+  "name": "Client",
+  "short_name": "Client",
   "id": "./",
   "start_url": "./",
   "display": "standalone",

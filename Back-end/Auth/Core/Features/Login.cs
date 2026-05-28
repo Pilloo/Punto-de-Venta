@@ -54,7 +54,7 @@ public class LoginCommandHandler(
 
             string token = await identityService.GenerateAccessTokenAsync(user);
 
-            TokenDto response = new TokenDto
+            TokenDto response = new()
             {
                 AccessToken = token,
                 RefreshToken = refreshToken

@@ -99,7 +99,7 @@ namespace AuthModule.Infrastructure.Services
 
                 return base64Token;
             }
-            catch (OperationCanceledException op)
+            catch (OperationCanceledException)
             {
                 _logger.LogInformation("Operation canceled!");
                 throw;

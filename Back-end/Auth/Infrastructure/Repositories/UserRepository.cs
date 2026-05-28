@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Models;
 using System.Linq.Expressions;
 
-namespace AuthModule.Infrastructure.Repositiories
+namespace AuthModule.Infrastructure.Repositories
 {
     /// <summary>
     /// Provides data access operations for user entities in the authentication system.

@@ -1,0 +1,104 @@
+﻿@page "/auth/login"
+
+@inject HttpClient Http
+@inject NavigationManager Navigation
+
+@using DTOs
+
+<div class="bg-background flex min-h-screen w-full items-center justify-center p-4">
+    <BbCard Class="w-full max-w-sm">
+        <BbCardHeader>
+            <BbCardTitle Class="text-center text-2xl font-bold">Iniciar sesión</BbCardTitle>
+            <BbCardDescription Class="text-center">Ingresa tus credenciales para acceder</BbCardDescription>
+        </BbCardHeader>
+        <BbCardContent>
+            <EditForm Model="@loginModel" OnValidSubmit="HandleLoginAsync">
+                <DataAnnotationsValidator />
+
+                <div class="grid gap-4">
+                    @* Campo: Nombre de usuario *@
+                    <div class="grid gap-2">
+                        <BbLabel For="username">Nombre de usuario</BbLabel>
+                        <BbInput Id="username"
+                                 @bind-Value="loginModel.Username"
+                                 Placeholder="ejemplo@correo.com" />
+                        <ValidationMessage For="() => loginModel.Username" class="text-sm text-destructive" />
+                    </div>
+
+                    @* Campo: Contraseña *@
+                    <div class="grid gap-2">
+                        <BbLabel For="password">Contraseña</BbLabel>
+                        <BbInput Id="password"
+                                 Type=InputType.Password
+                                 @bind-Value="loginModel.Password" />
+                        <ValidationMessage For="() => loginModel.Password" class="text-sm text-destructive" />
+                    </div>
+
+                    <div class="flex items-center space-x-2">
+                        <BbCheckbox Id="RememberMe" @bind-Checked="loginModel.RememberMe" />
+                        <BbLabel For="RememberMe">Recuérdame</BbLabel>
+                    </div>
+
+                    @* Alerta de error de la API *@
+                    @if (!string.IsNullOrEmpty(errorMessage))
+                    {
+                        <div class="text-destructive text-sm font-medium">
+                            @errorMessage
+                        </div>
+                    }
+
+                    @* Botón de envío *@
+                    <BbButton Type=ButtonType.Submit class="w-full" Disabled="@isLoading">
+                        @if (isLoading)
+                        {
+                            <span>Verificando...</span>
+                        }
+                        else
+                        {
+                            <span>Iniciar sesión</span>
+                        }
+                    </BbButton>
+                </div>
+            </EditForm>
+        </BbCardContent>
+    </BbCard>
+</div>
+
+@code {
+    private LoginDto loginModel = new();
+
+    private bool isLoading;
+    private string? errorMessage;
+
+    private async Task HandleLoginAsync()
+    {
+        isLoading = true;
+        errorMessage = null;
+
+        try
+        {
+            // Petición POST a tu API
+            var response = await Http.PostAsJsonAsync("api/auth/login", loginModel);
+
+            if (response.IsSuccessStatusCode)
+            {
+                // Aquí procesarías la respuesta (ej. guardar el JWT en LocalStorage)
+                // var result = await response.Content.ReadFromJsonAsync<LoginResponse>();
+
+                Navigation.NavigateTo("/dashboard");
+            }
+            else
+            {
+                errorMessage = "Credenciales incorrectas. Verifica tu usuario y contraseña.";
+            }
+        }
+        catch (HttpRequestException)
+        {
+            errorMessage = "Error de red. No se pudo conectar con el servidor.";
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+}
