@@ -1,5 +1,5 @@
 ﻿using AuthModule.Core.Interfaces;
-using DTOs;
+using DTOs.Auth;
 using ErrorHandling;
 using ErrorHandling.Service;
 using MediatR;
@@ -10,6 +10,11 @@ using System.ComponentModel.DataAnnotations;
 
 namespace AuthModule.Core.Features;
 
+/// <summary>
+/// Represents a request to authenticate a user and obtain an access token.
+/// </summary>
+/// <remarks>Processed via MediatR as IRequest<Result<TokenDto>>. Contains required Username and Password
+/// properties and a RememberMe flag that controls token persistence.</remarks>
 public class LoginCommand : IRequest<Result<TokenDto>>
 {
     [Required] public string Username { get; set; } = string.Empty;

@@ -10,6 +10,11 @@ using System.Security.Claims;
 
 namespace AuthModule.Core.Features;
 
+/// <summary>
+/// Represents a MediatR request to set a user's status by identifier.
+/// </summary>
+/// <remarks>Contains required properties UserId and Status. Intended to be handled by a request handler that
+/// returns a Result<Unit>.</remarks>
 public class SetUserStatusCommand : IRequest<Result<Unit>>
 {
     [Required] public Guid UserId { get; set; } = Guid.Empty;

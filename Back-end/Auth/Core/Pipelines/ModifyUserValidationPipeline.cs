@@ -1,5 +1,5 @@
 ﻿using AuthModule.Core.Features;
-using DTOs;
+using DTOs.Auth;
 using ErrorHandling;
 using ErrorHandling.Service;
 using MediatR;
@@ -13,6 +13,18 @@ using System.Text;
 
 namespace AuthModule.Core.Pipelines
 {
+    /// <summary>
+    /// Validates that the current HTTP user is authenticated and that the user's subject identifier matches the
+    /// ModifyUserCommand.UserId before allowing the pipeline to continue; returns appropriate error results for
+    /// unauthorized access, cancellation, or internal failures.
+    /// </summary>
+    /// <remarks>Short-circuits when invoked inside the module (no HttpContext), when the user is
+    /// unauthenticated, or when the authenticated user's subject identifier does not match the command UserId. Catches
+    /// OperationCanceledException and logs cancellation; catches other exceptions and returns an internal
+    /// error.</remarks>
+    /// <param name="httpContextAccessor">Provides access to the current HttpContext to retrieve the authenticated user.</param>
+    /// <param name="errorFactory">Creates standardized error instances used when validation fails or exceptions occur.</param>
+    /// <param name="logger">Logs informational and error events during validation and exception handling.</param>
     public class ModifyUserValidationPipeline(
         IHttpContextAccessor httpContextAccessor, 
         ErrorFactory errorFactory, 

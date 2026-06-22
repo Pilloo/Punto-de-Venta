@@ -1,5 +1,5 @@
 ﻿using AuthModule.Core.Interfaces;
-using DTOs;
+using DTOs.Auth;
 using ErrorHandling;
 using ErrorHandling.Service;
 using MediatR;
@@ -8,6 +8,10 @@ using Models;
 
 namespace AuthModule.Core.Features;
 
+/// <summary>
+/// Represents a query to retrieve inactive users.
+/// </summary>
+/// <remarks>Handled by a MediatR handler and returns a Result<IEnumerable<UserDto>>.</remarks>
 public class GetInactiveUsersQuery : IRequest<Result<IEnumerable<UserDto>>>
 {
 

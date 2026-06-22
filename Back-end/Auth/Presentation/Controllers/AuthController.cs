@@ -1,15 +1,19 @@
 ﻿using AuthModule.Core;
 using AuthModule.Core.Features;
-using DTOs;
+using AuthModule.Core.Interfaces;
+using DTOs.Auth;
 using ErrorHandling;
 using ErrorHandling.Service;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
+using System.Security.Cryptography;
 
 namespace AuthModule.Presentation.Controllers
 {
     [Route("/api/[controller]")]
+    [Tags("Auth Service API")]
     [ApiController]
     public class AuthController(IMediator mediator, ErrorFactory errorFactory) : Controller
     {
@@ -204,4 +208,29 @@ namespace AuthModule.Presentation.Controllers
         }
     }
 
+    [Route(".well-known")]
+    [Tags(".well-known API")]
+    [ApiController]
+    public class WellKnownController(IConfiguration configuration) : Controller
+    {
+        [HttpGet("jwks.json")]
+        public IActionResult GetJwks(ICryptoService cryptoService)
+        {
+            IConfigurationSection jwtOptions = configuration.GetSection("Jwt");
+
+            ECDsa key = cryptoService.LoadEcdsaKey(jwtOptions.GetValue<string>("PublicKeyPath")!);
+
+            ECDsaSecurityKey ecdsaSecurityKey = new ECDsaSecurityKey(key);
+
+            JsonWebKey jsonWebKey = JsonWebKeyConverter.ConvertFromECDsaSecurityKey(ecdsaSecurityKey);
+
+            jsonWebKey.Kid = Convert.ToHexString(ecdsaSecurityKey.ComputeJwkThumbprint());
+            
+            jsonWebKey.Use = "sig";
+
+            var jwks = new { keys = new[] { jsonWebKey }};
+
+            return Ok(jwks);
+        }
+    }
 }

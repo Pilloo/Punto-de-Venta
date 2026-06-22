@@ -3,9 +3,13 @@
   <Folder Name="/Back-end/Auth Service/">
     <Project Path="Back-end/Auth/Core/Core.csproj" Id="6a01967d-d97d-4861-a434-ae92a8dc15a7" />
     <Project Path="Back-end/Auth/Infrastructure/Infrastructure.csproj" Id="c6b4d134-1be0-49eb-b924-25d66bdc1013" />
-    <Project Path="Back-end/Auth/Presentation/Presentation.csproj" />
+    <Project Path="Back-end/Auth/Presentation/Auth.csproj" />
   </Folder>
-  <Folder Name="/Back-end/Inventory Service/" />
+  <Folder Name="/Back-end/Inventory Service/">
+    <Project Path="Back-end/Inventory/Core/Core.csproj" Id="62015a83-b258-4594-b721-8e194f355536" />
+    <Project Path="Back-end/Inventory/Infrastructure/Infrastructure.csproj" Id="c0a38b69-2d11-4bb8-8caa-be0c1b9bc065" />
+    <Project Path="Back-end/Inventory/Presentation/Inventory.csproj" />
+  </Folder>
   <Folder Name="/Back-end/Shared/">
     <Project Path="Back-end/ErrorHandling/ErrorHandling.csproj" Id="fe50938e-0f5e-485d-8ddd-aab54e7cbb47" />
   </Folder>
@@ -13,7 +17,10 @@
     <Project Path="Front-end/Client/Client.csproj" Id="f365175a-d594-445b-81cf-bd80f65fd491" />
   </Folder>
   <Folder Name="/Shared/">
+    <Project Path="Shared/Contracts/Contracts.csproj" />
     <Project Path="Shared/DTOs/DTOs.csproj" Id="b5477e9c-7bf2-4ac1-a01b-ae0c10a18bd7" />
     <Project Path="Shared/Models/Models.csproj" Id="f6467f12-50cf-4972-b337-a5db101177ac" />
   </Folder>
+  <Project Path="Orchestration/Punto de Venta - Conexión Celular.AppHost/Punto de Venta - Conexión Celular.AppHost.csproj" Id="5aee0294-4cdc-4481-aefa-066f04b02058" />
+  <Project Path="Orchestration/Punto de Venta - Conexión Celular.ServiceDefaults/Punto de Venta - Conexión Celular.ServiceDefaults.csproj" />
 </Solution>

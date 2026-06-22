@@ -1,6 +1,6 @@
 ﻿using AuthModule.Core.Domain;
 using AuthModule.Core.Interfaces;
-using DTOs;
+using DTOs.Auth;
 using ErrorHandling;
 using ErrorHandling.Service;
 using MediatR;
@@ -11,6 +11,11 @@ using System.ComponentModel.DataAnnotations;
 
 namespace AuthModule.Core.Features;
 
+/// <summary>
+/// Request to refresh an access token for the specified user using a refresh token.
+/// </summary>
+/// <remarks>UserId and RefreshToken are required. When handled, returns a Result<TokenDto> containing the
+/// refreshed access token on success.</remarks>
 public class RefreshAccessTokenCommand : IRequest<Result<TokenDto>>
 {
     [Required] public Guid UserId { get; set; } = Guid.Empty;

@@ -1,10 +1,10 @@
 ﻿using AuthModule.Core.Pipelines;
 using AuthModule.Core.Features;
-using DTOs;
 using ErrorHandling;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
+using DTOs.Auth;
 
 namespace AuthModule.Core.Extensions
 {

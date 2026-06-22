@@ -1,5 +1,5 @@
 ﻿using AuthModule.Core.Interfaces;
-using DTOs;
+using DTOs.Auth;
 using ErrorHandling;
 using ErrorHandling.Service;
 using MediatR;
@@ -8,6 +8,11 @@ using Models;
 
 namespace AuthModule.Core.Features;
 
+/// <summary>
+/// Request to retrieve active users as a Result<IEnumerable<UserDto>>.
+/// </summary>
+/// <remarks>Intended for use with MediatR; a handler should return a Result<IEnumerable<UserDto>> containing the
+/// active users.</remarks>
 public class GetActiveUsersQuery : IRequest<Result<IEnumerable<UserDto>>>
 {
 
@@ -21,7 +26,7 @@ public class GetActiveUsersQueryHandler(IUserRepository userRepository, ErrorFac
         {
             IEnumerable<User?> userList = await userRepository.GetUsersAsync(x => x.IsActive, true, cancellationToken);
 
-            if (userList.Count() == 0)
+            if (!userList.Any())
             {
                 return Result<IEnumerable<UserDto>>.Failure(errorFactory.Create(new ActiveUsersNotFound()));
             }

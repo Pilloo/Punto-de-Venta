@@ -1,3 +1,4 @@
+using System.Net;
 using ErrorHandling.Extensions;
 using AuthModule.Infrastructure.Persistence;
 using AuthModule.Infrastructure.Extensions;
@@ -7,15 +8,16 @@ using Microsoft.IdentityModel.Tokens;
 using Models;
 using Serilog;
 using System.Security.Cryptography;
-using Scalar.AspNetCore;
 using Microsoft.AspNetCore.Identity;
 using AuthModule.Core.Extensions;
-using AuthModule.Core.Interfaces;
+using AuthModule.Presentation.Grpc;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Serilog.Templates;
-using Serilog.Sinks.SystemConsole.Themes;
 using Serilog.Enrichers.Span;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.AddServiceDefaults();
 
 const string logTemplate = "[{@t:HH:mm:ss} {@l:u3}] {#if TraceId is not null}[Trace: {TraceId}] {#end}{@m}\n{@x}";
 ExpressionTemplate formatter = new(logTemplate);
@@ -35,13 +37,17 @@ builder.Host.UseSerilog();
 // Add services to the container.
 builder.Services.AddCoreServices();
 builder.Services.AddErrorHadlingService(builder.Configuration);
-builder.Services.AddInfrastructureServices(builder.Configuration);
+
+builder.AddInfrastructureServices();
 
 builder.Services.AddIdentityCore<User>().AddEntityFrameworkStores<AuthDbContext>().AddSignInManager().AddDefaultTokenProviders();
 
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 builder.Services.AddRouting(config => config.LowercaseUrls = true);
+
+builder.Services.AddGrpc(options => options.EnableDetailedErrors = builder.Environment.IsDevelopment());
+builder.Services.AddGrpcReflection();
 
 builder.Services.AddAuthentication(options =>
 {
@@ -72,15 +78,22 @@ builder.Services.AddAuthentication(options =>
 
 var app = builder.Build();
 
+app.MapDefaultEndpoints();
+
+app.MapGrpcService<AuthGrpcService>();
+
+await app.SeedIdentityAsync();
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSerilogRequestLogging();
-    app.MapOpenApi();
-    app.MapScalarApiReference();
+    app.MapGrpcReflectionService();
 }
 
-app.UseHttpsRedirection();
+app.MapOpenApi();
+
+// app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();

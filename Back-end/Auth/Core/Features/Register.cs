@@ -8,6 +8,12 @@ using System.ComponentModel.DataAnnotations;
 
 namespace AuthModule.Core.Features;
 
+/// <summary>
+/// Command to register a new user containing username, given name, last name, and password.
+/// </summary>
+/// <remarks>All properties are required. Intended for use with MediatR; handlers should return a Result<Unit>.
+/// The password is marked as DataType.Password and must be transmitted, handled, and stored securely (e.g., hashed);
+/// avoid logging or exposing plaintext.</remarks>
 public class RegisterCommand : IRequest<Result<Unit>>
 {
     [Required]

@@ -1,9 +1,6 @@
 ﻿using ErrorHandling;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace AuthModule.Core
 {
@@ -40,8 +37,8 @@ namespace AuthModule.Core
                             .ToDictionary(
                                 kvp => kvp.Key,
                                 kvp => kvp.Value!.Errors.Count == 1
-                                       ? (object)kvp.Value!.Errors[0].ErrorMessage!
-                                       : kvp.Value.Errors.Select(e => e.ErrorMessage!).ToList()
+                                       ? (object)kvp.Value!.Errors[0].ErrorMessage
+                                       : kvp.Value.Errors.Select(e => e.ErrorMessage).ToList()
                             )
             )
         { }

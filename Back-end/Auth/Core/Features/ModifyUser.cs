@@ -1,5 +1,5 @@
 ﻿using AuthModule.Core.Interfaces;
-using DTOs;
+using DTOs.Auth;
 using ErrorHandling;
 using ErrorHandling.Service;
 using MediatR;
@@ -10,6 +10,13 @@ using System.ComponentModel.DataAnnotations;
 
 namespace AuthModule.Core.Features;
 
+/// <summary>
+/// Represents a request to update a user's profile information and optionally change the user's password; returns an
+/// authentication token on success.
+/// </summary>
+/// <remarks>UserId is required. If NewPassword is provided, OldPassword must also be supplied to perform a
+/// password change. Properties left empty are treated as unchanged. The command is handled by a handler that returns a
+/// Result<TokenDto>.</remarks>
 public class ModifyUserCommand : IRequest<Result<TokenDto>>
 {
     [Required] public Guid UserId { get; set; } = Guid.Empty;

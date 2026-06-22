@@ -11,6 +11,7 @@
   <ItemGroup>
     <PackageReference Include="BlazorBlueprint.Components" Version="3.10.2" />
     <PackageReference Include="BlazorBlueprint.Icons.Lucide" Version="2.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="10.0.8" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.8" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="10.0.8" PrivateAssets="all" />
   </ItemGroup>
