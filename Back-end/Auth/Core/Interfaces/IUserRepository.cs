@@ -1,16 +1,16 @@
 ﻿using Models;
-using System;
-using System.Collections.Generic;
 using System.Linq.Expressions;
-using System.Text;
 
 namespace AuthModule.Core.Interfaces
 {
     public interface IUserRepository
     {
-        Task<IEnumerable<User?>> GetUsersAsync(Expression<Func<User, bool>> predicate, bool asNoTracking, CancellationToken ct);
-     
-        Task<User?> GetUserAsync(Expression<Func<User, bool>> predicate, bool asNoTracking, CancellationToken ct);
+        Task<(IReadOnlyCollection<User> users, int userCount)> GetAllUsersAsync(
+            bool? active, bool? includeInactive, int pageNumber, int pageSize, CancellationToken ct);
+
+
+        Task<User?> GetUserAsync(Expression<Func<User, bool>> predicate, bool asNoTracking, bool includeInactive,
+                                 CancellationToken ct);
 
         Task SaveChangesAsync(CancellationToken ct);
     }

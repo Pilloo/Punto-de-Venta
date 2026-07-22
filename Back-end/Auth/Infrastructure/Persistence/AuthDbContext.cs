@@ -6,32 +6,24 @@ using Microsoft.AspNetCore.Identity;
 
 namespace AuthModule.Infrastructure.Persistence
 {
-    public class AuthDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
+    public class AuthDbContext(DbContextOptions<AuthDbContext> options)
+        : IdentityDbContext<User, IdentityRole<Guid>, Guid>(options)
     {
-        public AuthDbContext(DbContextOptions<AuthDbContext> options) : base(options) { }
-
         public DbSet<RefreshToken> RefreshTokens { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
 
-            builder.Entity<User>().HasQueryFilter(q => q.IsActive);
+            builder.UseCollation("Latin1_General_100_CI_AS");
 
-            builder.Entity<User>().Ignore(x => x.Email);
-            builder.Entity<User>().Ignore(x => x.EmailConfirmed);
-            builder.Entity<User>().Ignore(x => x.NormalizedEmail);
-            builder.Entity<User>().Ignore(x => x.LockoutEnabled);
-            builder.Entity<User>().Ignore(x => x.LockoutEnd);
-            builder.Entity<User>().Ignore(x => x.AccessFailedCount);
-            builder.Entity<User>().Ignore(x => x.TwoFactorEnabled);
-            builder.Entity<User>().Ignore(x => x.PhoneNumber);
-            builder.Entity<User>().Ignore(x => x.PhoneNumberConfirmed);
-
-            builder.Entity<RefreshToken>()
-                   .HasOne<User>()
-                   .WithMany()
-                   .OnDelete(DeleteBehavior.NoAction);
+            builder.Entity<RefreshToken>(entity =>
+            {
+                entity.HasOne(r => r.User)
+                      .WithMany()
+                      .HasForeignKey(r => r.UserId)
+                      .OnDelete(DeleteBehavior.Cascade);
+            });
         }
     }
 }

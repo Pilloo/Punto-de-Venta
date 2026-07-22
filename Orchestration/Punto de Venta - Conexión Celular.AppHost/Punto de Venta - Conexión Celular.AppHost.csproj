@@ -1,4 +1,4 @@
-<Project Sdk="Aspire.AppHost.Sdk/13.4.3">
+<Project Sdk="Aspire.AppHost.Sdk/13.4.6">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -15,10 +15,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Aspire.Hosting.Docker" Version="13.4.3" />
-    <PackageReference Include="Aspire.Hosting.EntityFrameworkCore" Version="13.4.3-preview.1.26305.13" />
-    <PackageReference Include="Aspire.Hosting.SqlServer" Version="13.4.3" />
-    <PackageReference Include="Scalar.Aspire" Version="0.10.2" />
+    <PackageReference Include="Aspire.Hosting.Docker" Version="13.4.6" />
+    <PackageReference Include="Aspire.Hosting.EntityFrameworkCore" Version="13.4.6-preview.1.26319.6" />
+    <PackageReference Include="Aspire.Hosting.SqlServer" Version="13.4.6" />
+    <PackageReference Include="Scalar.Aspire" Version="0.11.11" />
   </ItemGroup>
 
 </Project>

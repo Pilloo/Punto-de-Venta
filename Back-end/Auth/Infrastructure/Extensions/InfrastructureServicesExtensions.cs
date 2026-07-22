@@ -1,6 +1,5 @@
 ﻿using AuthModule.Core.Interfaces;
 using AuthModule.Infrastructure.Persistence;
-using AuthModule.Infrastructure.Repositiories;
 using AuthModule.Infrastructure.Repositories;
 using AuthModule.Infrastructure.Services;
 using Aspire.Microsoft.EntityFrameworkCore.SqlServer;

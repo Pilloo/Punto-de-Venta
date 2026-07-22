@@ -1,9 +1,10 @@
-﻿using Inventory.Infrastructure.Persistence;
+﻿using EntityFramework.Exceptions.SqlServer;
+using Inventory.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Hosting;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using Inventory.Core.Interfaces;
+using Inventory.Infrastructure.Repositories;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Inventory.Infrastructure.Extensions
 {
@@ -11,7 +12,16 @@ namespace Inventory.Infrastructure.Extensions
     {
         public static WebApplicationBuilder AddInfrastructureService(this WebApplicationBuilder? builder)
         {
-            builder!.AddSqlServerDbContext<InventoryDbContext>(connectionName: "inventory-database");
+            builder!.AddSqlServerDbContext<InventoryDbContext>(connectionName: "inventory-database",
+                                                               configureDbContextOptions: options =>
+                                                               {
+                                                                   options.UseExceptionProcessor();
+                                                               });
+
+            builder!.Services.AddTransient<IBrandRepository, BrandRepository>();
+            builder!.Services.AddTransient<ICategoryRepository, CategoryRepository>();
+            builder!.Services.AddTransient<IColourRepository, ColourRepository>();
+            builder!.Services.AddTransient<IProductRepository, ProductRepository>();
 
             return builder!;
         }

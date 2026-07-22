@@ -23,14 +23,14 @@ const string logTemplate = "[{@t:HH:mm:ss} {@l:u3}] {#if TraceId is not null}[Tr
 ExpressionTemplate formatter = new(logTemplate);
 
 Log.Logger = new LoggerConfiguration()
-    .MinimumLevel.Is(!builder.Environment.IsProduction()
-        ? Serilog.Events.LogEventLevel.Debug
-        : Serilog.Events.LogEventLevel.Information)
-    .Enrich.FromLogContext()
-    .Enrich.WithSpan()
-    .WriteTo.Console(formatter)
-    .WriteTo.File(formatter: formatter, path: "Logs/applog-.txt", rollingInterval: RollingInterval.Day)
-    .CreateLogger();
+             .MinimumLevel.Is(!builder.Environment.IsProduction()
+                                  ? Serilog.Events.LogEventLevel.Debug
+                                  : Serilog.Events.LogEventLevel.Information)
+             .Enrich.FromLogContext()
+             .Enrich.WithSpan()
+             .WriteTo.Console(formatter)
+             .WriteTo.File(formatter: formatter, path: "/app/logs/applog-.txt", rollingInterval: RollingInterval.Day)
+             .CreateLogger();
 
 builder.Host.UseSerilog();
 
@@ -40,7 +40,8 @@ builder.Services.AddErrorHadlingService(builder.Configuration);
 
 builder.AddInfrastructureServices();
 
-builder.Services.AddIdentityCore<User>().AddEntityFrameworkStores<AuthDbContext>().AddSignInManager().AddDefaultTokenProviders();
+builder.Services.AddIdentityCore<User>().AddEntityFrameworkStores<AuthDbContext>().AddSignInManager()
+       .AddDefaultTokenProviders();
 
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
@@ -54,8 +55,7 @@ builder.Services.AddAuthentication(options =>
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-}).AddJwtBearer(
-    options =>
+}).AddJwtBearer(options =>
     {
         var jwtOptions = builder.Configuration.GetSection("Jwt");
         options.TokenValidationParameters = new TokenValidationParameters
@@ -64,6 +64,7 @@ builder.Services.AddAuthentication(options =>
             ValidateAudience = true,
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
+            ClockSkew = TimeSpan.FromSeconds(30),
             ValidIssuer = jwtOptions.GetValue<string>("Issuer"),
             ValidAudience = jwtOptions.GetValue<string>("Audience"),
             IssuerSigningKeyResolver = (token, securityToken, kid, parameters) =>
@@ -93,7 +94,7 @@ if (app.Environment.IsDevelopment())
 
 app.MapOpenApi();
 
-// app.UseHttpsRedirection();
+app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();

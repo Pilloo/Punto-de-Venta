@@ -18,7 +18,7 @@ namespace AuthModule.Core.Extensions
                 [
                     Assembly.GetExecutingAssembly()
                 ]);
-                cfg.AddBehavior<IPipelineBehavior<ModifyUserCommand, Result<TokenDto>>, ModifyUserValidationPipeline>();
+                cfg.AddBehavior<IPipelineBehavior<ModifyUserCommand, Result<TokenResponse>>, ModifyUserValidationPipeline>();
             });
 
             return services;

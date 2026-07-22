@@ -13,9 +13,7 @@
   <Folder Name="/Back-end/Shared/">
     <Project Path="Back-end/ErrorHandling/ErrorHandling.csproj" Id="fe50938e-0f5e-485d-8ddd-aab54e7cbb47" />
   </Folder>
-  <Folder Name="/Front-end/">
-    <Project Path="Front-end/Client/Client.csproj" Id="f365175a-d594-445b-81cf-bd80f65fd491" />
-  </Folder>
+  <Folder Name="/Front-end/" />
   <Folder Name="/Shared/">
     <Project Path="Shared/Contracts/Contracts.csproj" />
     <Project Path="Shared/DTOs/DTOs.csproj" Id="b5477e9c-7bf2-4ac1-a01b-ae0c10a18bd7" />

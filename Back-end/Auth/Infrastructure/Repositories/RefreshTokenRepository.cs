@@ -1,10 +1,9 @@
-﻿using AuthModule.Core.Interfaces;
-using AuthModule.Core.Domain;
+﻿using AuthModule.Core.Domain;
+using AuthModule.Core.Interfaces;
 using AuthModule.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
-namespace AuthModule.Infrastructure.Repositiories
+namespace AuthModule.Infrastructure.Repositories
 {
     public class RefreshTokenRepository(AuthDbContext context) : IRefreshTokenRepository
     {

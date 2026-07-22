@@ -1,38 +1,52 @@
-﻿using AuthModule.Core.Features;
+﻿using AuthModule.Core.Features.UserFeatures;
 using AuthService.Protos;
+using DTOs.Users;
 using ErrorHandling;
 using Grpc.Core;
 using MediatR;
-using Models;
 using static AuthService.Protos.AuthService;
 
 namespace AuthModule.Presentation.Grpc;
 
-public class AuthGrpcService(IMediator mediator) : AuthServiceBase
+public class AuthGrpcService(IMediator mediator, ILogger<AuthGrpcService> logger) : AuthServiceBase
 {
     public override async Task<UserInfo> GetUserInfo(UserRequest request, ServerCallContext context)
     {
-        GetUserQuery query = new()
+        try
         {
-            UserId = Guid.Parse(request.UserId),
-        };
+            GetUserByIdQuery byIdQuery = new()
+            {
+                UserId = Guid.Parse(request.UserId),
+                IncludeInactiveUsers = request.IncludeInactiveUsers
+            };
 
-        Result<User?> result = await mediator.Send(query);
-        
-        User? user = result.Value;
+            Result<UserResponse> result = await mediator.Send(byIdQuery);
 
-        if (user == null)
-        {
-            throw new RpcException(new Status(StatusCode.NotFound, $"User {request.UserId} not found."));
+            if (!result.IsSuccess && result.Error!.Status == 404)
+            {
+                throw new RpcException(new Status(StatusCode.NotFound, $"User {request.UserId} not found."));
+            }
+
+            UserInfo userInfo = new()
+            {
+                GivenName = result.Value.GivenName,
+                LastName = result.Value.LastName,
+                IsActive = result.Value.IsActive,
+            };
+
+            return userInfo;
         }
-
-        UserInfo userInfo = new()
+        catch (RpcException e)
         {
-            GivenName = user.GivenName,
-            LastName = user.LastName,
-            IsActive = user.IsActive,
-        };
-        
-        return userInfo;
+            logger.LogDebug(e, e.Message);
+            
+            throw;
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, e.Message);
+            
+            throw new RpcException(new Status(StatusCode.Internal, "An unexpected error occurred."));
+        }
     }
 }

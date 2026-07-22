@@ -29,9 +29,9 @@ namespace AuthModule.Core.Pipelines
         IHttpContextAccessor httpContextAccessor, 
         ErrorFactory errorFactory, 
         ILogger<ModifyUserValidationPipeline> logger
-    ) : IPipelineBehavior<ModifyUserCommand, Result<TokenDto>>
+    ) : IPipelineBehavior<ModifyUserCommand, Result<TokenResponse>>
     {
-        public async Task<Result<TokenDto>> Handle(ModifyUserCommand command, RequestHandlerDelegate<Result<TokenDto>> next, CancellationToken ct)
+        public async Task<Result<TokenResponse>> Handle(ModifyUserCommand command, RequestHandlerDelegate<Result<TokenResponse>> next, CancellationToken ct)
         {
             try
             {
@@ -49,14 +49,14 @@ namespace AuthModule.Core.Pipelines
 
                 if (user.Identity?.IsAuthenticated == false)
                 {
-                    return Result<TokenDto>.Failure(errorFactory.Create(new UnauthorizedOperation()));
+                    return Result<TokenResponse>.Failure(errorFactory.Create(new UnauthorizedOperation()));
                 }
 
                 string? subjectId = user.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
 
                 if (string.IsNullOrEmpty(subjectId) || Guid.Parse(subjectId) != command.UserId)
                 {
-                    return Result<TokenDto>.Failure(errorFactory.Create(new UnauthorizedOperation()));
+                    return Result<TokenResponse>.Failure(errorFactory.Create(new UnauthorizedOperation()));
                 }
 
                 return await next();
@@ -65,12 +65,12 @@ namespace AuthModule.Core.Pipelines
             {
                 logger.LogInformation("Operation canceled for User Id {userId}", command.UserId);
 
-                return Result<TokenDto>.Failure(errorFactory.Create(new OperationCanceled()));
+                return Result<TokenResponse>.Failure(errorFactory.Create(new OperationCanceled()));
             } catch (Exception ex)
             {
                 logger.LogError(ex, ex.Message);
 
-                return Result<TokenDto>.Failure(errorFactory.Create(new InternalError()));
+                return Result<TokenResponse>.Failure(errorFactory.Create(new InternalError()));
             }
         }
     }

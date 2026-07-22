@@ -4,6 +4,7 @@ option csharp_namespace = "AuthService.Protos";
 
 message UserRequest {
   string user_id = 1;
+  bool include_inactive_users = 2; 
 };
 
 message UserInfo {

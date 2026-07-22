@@ -1,15 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using EntityFramework.Exceptions.SqlServer;
+using Microsoft.EntityFrameworkCore;
 using Models;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Inventory.Infrastructure.Persistence
 {
-    public class InventoryDbContext : DbContext
+    public class InventoryDbContext(DbContextOptions<InventoryDbContext> options) : DbContext(options)
     {
-        public InventoryDbContext(DbContextOptions<InventoryDbContext> options) : base(options) { }
-    
         public DbSet<Colour> Colours { get; set; }
         
         public DbSet<Brand> Brands { get; set; }
@@ -17,5 +13,12 @@ namespace Inventory.Infrastructure.Persistence
         public DbSet<Category> Categories { get; set; }
              
         public DbSet<Product> Products { get; set; }
+        
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+
+            builder.UseCollation("Latin1_General_100_CI_AS");
+        }
     }
 }

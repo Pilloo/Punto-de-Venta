@@ -1,0 +1,16 @@
+﻿syntax = "proto3";
+
+option csharp_namespace = "ProductsService.Protos";
+
+import "google/protobuf/empty.proto";
+
+message DecreaseStockRequest {
+  string product_id = 1;
+  int32 quantity = 2; 
+};
+
+
+
+service ProductsService {
+  rpc DecreaseStock(DecreaseStockRequest) returns (google.protobuf.Empty);
+}

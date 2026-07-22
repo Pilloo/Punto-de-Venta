@@ -17,8 +17,8 @@ public abstract record ErrorMessage
     /// <summary>
     /// Gets the error classification code.
     /// </summary>
-    /// <value>One of the standard <see cref="ErrorCodes"/> values.</value>
-    public ErrorCodes Code { get; init; }
+    /// <value>One of the standard <see cref="HttpCodes"/> values.</value>
+    public HttpCodes Code { get; init; }
 
     /// <summary>
     /// Gets the human-readable error summary.
@@ -44,12 +44,12 @@ public abstract record ErrorMessage
     /// <summary>
     /// Initializes a new instance of the <see cref="ErrorMessage"/> record.
     /// </summary>
-    /// <param name="Code">The error category from <see cref="ErrorCodes"/>.</param>
+    /// <param name="Code">The error category from <see cref="HttpCodes"/>.</param>
     /// <param name="Title">A human-readable summary of the error.</param>
     /// <param name="Detail">Additional details about the error (optional).</param>
     /// <param name="Extensions">Additional error metadata as key-value pairs (optional).</param>
     protected ErrorMessage(
-        ErrorCodes Code,
+        HttpCodes Code,
         string Title,
         string? Detail = null,
         Dictionary<string, object>? Extensions = null)
