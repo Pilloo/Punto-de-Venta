@@ -1,9 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc;
 
 namespace ErrorHandling;
 
 /// <summary>
-/// Represents a standardized error structure for internal application errors,
+/// Represents a standardised error structure for internal application errors,
 /// compatible with RFC 7807 (Problem Details for HTTP APIs).
 /// </summary>
 /// <remarks>

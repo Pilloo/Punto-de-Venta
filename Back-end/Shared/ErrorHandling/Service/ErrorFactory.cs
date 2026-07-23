@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System;
+using Microsoft.AspNetCore.Http;
 using ProblemDetails = Microsoft.AspNetCore.Mvc.ProblemDetails;
 using Microsoft.Extensions.Configuration;
 using System.Diagnostics;
