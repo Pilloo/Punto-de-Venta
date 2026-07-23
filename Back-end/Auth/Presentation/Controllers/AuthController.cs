@@ -1,5 +1,4 @@
 ﻿using AuthModule.Core;
-using AuthModule.Core.Features;
 using AuthModule.Core.Interfaces;
 using DTOs.Auth;
 using ErrorHandling;

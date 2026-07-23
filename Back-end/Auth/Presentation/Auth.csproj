@@ -49,7 +49,7 @@
         <ProjectReference Include="..\..\..\Orchestration\Punto de Venta - Conexión Celular.ServiceDefaults\Punto de Venta - Conexión Celular.ServiceDefaults.csproj" />
         <ProjectReference Include="..\..\..\Shared\Contracts\Contracts.csproj" />
         <ProjectReference Include="..\..\..\Shared\Models\Models.csproj" />
-        <ProjectReference Include="..\..\ErrorHandling\ErrorHandling.csproj" />
+        <ProjectReference Include="..\..\Shared\ErrorHandling\ErrorHandling.csproj" />
         <ProjectReference Include="..\Core\Core.csproj" />
         <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
     </ItemGroup>

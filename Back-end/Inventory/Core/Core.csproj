@@ -11,6 +11,7 @@
     <ProjectReference Include="..\..\..\Shared\DTOs\DTOs.csproj" />
     <ProjectReference Include="..\..\..\Shared\Models\Models.csproj" />
     <ProjectReference Include="..\..\ErrorHandling\ErrorHandling.csproj" />
+    <ProjectReference Include="..\..\Shared\ErrorHandling\ErrorHandling.csproj" />
   </ItemGroup>
 
   <ItemGroup>

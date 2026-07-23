@@ -11,7 +11,8 @@
     <Project Path="Back-end/Inventory/Presentation/Inventory.csproj" />
   </Folder>
   <Folder Name="/Back-end/Shared/">
-    <Project Path="Back-end/ErrorHandling/ErrorHandling.csproj" Id="fe50938e-0f5e-485d-8ddd-aab54e7cbb47" />
+    <Project Path="Back-end/Shared/ErrorHandling/ErrorHandling.csproj" Id="fe50938e-0f5e-485d-8ddd-aab54e7cbb47" />
+    <Project Path="Back-end/Shared/Services/Services.csproj" />
   </Folder>
   <Folder Name="/Front-end/" />
   <Folder Name="/Shared/">
