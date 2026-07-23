@@ -6,7 +6,7 @@ namespace ErrorHandling.Extensions
 {
     public static class ErrorHandlingExtension
     {
-        public static IServiceCollection AddErrorHadlingService(this IServiceCollection services, ConfigurationManager configurationManager)
+        public static IServiceCollection AddErrorHandlingService(this IServiceCollection services, ConfigurationManager configurationManager)
         {
             services.AddHttpContextAccessor();
             services.AddSingleton<ErrorFactory>();

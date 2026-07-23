@@ -80,30 +80,4 @@ namespace AuthModule.Presentation.Controllers
             return Ok(result.Value);
         }
     }
-
-    [Route(".well-known")]
-    [Tags(".well-known API")]
-    [ApiController]
-    public class WellKnownController(IConfiguration configuration) : Controller
-    {
-        [HttpGet("jwks.json")]
-        public IActionResult GetJwks(ICryptoService cryptoService)
-        {
-            IConfigurationSection jwtOptions = configuration.GetSection("Jwt");
-
-            ECDsa key = cryptoService.LoadEcdsaKey(jwtOptions.GetValue<string>("PublicKeyPath")!);
-
-            ECDsaSecurityKey ecdsaSecurityKey = new ECDsaSecurityKey(key);
-
-            JsonWebKey jsonWebKey = JsonWebKeyConverter.ConvertFromECDsaSecurityKey(ecdsaSecurityKey);
-
-            jsonWebKey.Kid = Convert.ToHexString(ecdsaSecurityKey.ComputeJwkThumbprint());
-
-            jsonWebKey.Use = "sig";
-
-            var jwks = new { keys = new[] { jsonWebKey } };
-
-            return Ok(jwks);
-        }
-    }
 }

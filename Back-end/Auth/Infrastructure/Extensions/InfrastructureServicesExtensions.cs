@@ -17,7 +17,6 @@ public static class InfrastructureServicesExtensions
         builder!.AddSqlServerDbContext<AuthDbContext>(connectionName: "auth-database");
 
         builder!.Services.AddTransient<IIdentityService, IdentityService>();
-        builder.Services.AddTransient<ICryptoService, CryptoService>();
         builder.Services.AddTransient<IRefreshTokenRepository, RefreshTokenRepository>();
         builder.Services.AddTransient<IUserRepository, UserRepository>();
         

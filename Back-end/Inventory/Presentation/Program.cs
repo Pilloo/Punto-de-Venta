@@ -9,6 +9,7 @@ using Inventory.Presentation.Grpc;
 using Serilog.Templates;
 using Serilog.Enrichers.Span;
 using Serilog.Sinks.OpenTelemetry;
+using Services.CryptoService.Implementation;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -39,7 +40,7 @@ builder.Host.UseSerilog();
 
 // Add services to the container.
 builder.Services.AddCoreServices();
-builder.Services.AddErrorHadlingService(builder.Configuration);
+builder.Services.AddErrorHandlingService(builder.Configuration);
 
 builder.AddInfrastructureService();
 
@@ -72,11 +73,8 @@ builder.Services.AddAuthentication(options =>
             ValidAudience = jwtOptions.GetValue<string>("Audience"),
             IssuerSigningKeyResolver = (token, securityToken, kid, parameters) =>
             {
-                string fileContent = File.ReadAllText(jwtOptions.GetValue<string>("PublicKeyPath")!);
-                ECDsa key = ECDsa.Create();
-
-                key.ImportFromPem(fileContent);
-
+                CryptoService cryptoService = new();
+                ECDsa key = cryptoService.LoadEcdsaKey(jwtOptions.GetValue<string>("PublicKeyPath")!);
                 return [new ECDsaSecurityKey(key)];
             },
         };

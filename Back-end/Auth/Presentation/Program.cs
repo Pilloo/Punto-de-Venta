@@ -2,20 +2,19 @@ using System.Net;
 using ErrorHandling.Extensions;
 using AuthModule.Infrastructure.Persistence;
 using AuthModule.Infrastructure.Extensions;
-using AuthModule.Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using Models;
 using Serilog;
 using System.Security.Cryptography;
 using Microsoft.AspNetCore.Identity;
 using AuthModule.Core.Extensions;
 using AuthModule.Presentation.Grpc;
-using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Models.Auth;
 using Serilog.Templates;
 using Serilog.Enrichers.Span;
 using Serilog.Sinks.OpenTelemetry;
+using Services.CryptoService.Extensions;
+using Services.CryptoService.Implementation;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -43,7 +42,8 @@ builder.Host.UseSerilog();
 
 // Add services to the container.
 builder.Services.AddCoreServices();
-builder.Services.AddErrorHadlingService(builder.Configuration);
+builder.Services.AddErrorHandlingService(builder.Configuration);
+builder.Services.AddCryptoService();
 
 builder.AddInfrastructureServices();
 
