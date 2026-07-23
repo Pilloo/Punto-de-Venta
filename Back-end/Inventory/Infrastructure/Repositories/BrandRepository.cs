@@ -1,10 +1,8 @@
 ﻿using System.Linq.Expressions;
-using EntityFramework.Exceptions.Common;
 using Inventory.Core.Interfaces;
 using Inventory.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using Models;
+using Models.Inventory;
 
 namespace Inventory.Infrastructure.Repositories;
 
@@ -54,7 +52,7 @@ public class BrandRepository(InventoryDbContext context) : IBrandRepository
     /// <param name="pageNumber">The number of the page to retrieve. Defaults to 1.</param>
     /// <param name="pageSize">The number of brands per page. Defaults to 10.</param>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
-    /// <returns>A task that represents the asynchronous operation, returning a tuple containing a list of brands and the total count of brands.</returns>
+    /// <returns>A task which represents the asynchronous operation, returning a tuple containing a list of brands and the total count of brands.</returns>
     public async Task<(IReadOnlyList<Brand> items, int itemCount)> GetAllBrandsAsync(
         bool? active, bool? includeInactive, int pageNumber = 1, int pageSize = 10,
         CancellationToken cancellationToken = default)
@@ -87,7 +85,7 @@ public class BrandRepository(InventoryDbContext context) : IBrandRepository
     /// <param name="predicate">A predicate expression used to filter the brands.</param>
     /// <param name="asNoTracking">A boolean indicating whether the query should be executed with no tracking.</param>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
-    /// <returns>A task that represents the asynchronous operation, containing a collection of brands that match the criteria.</returns>
+    /// <returns>A task, which represents the asynchronous operation, containing a collection of brands that match the criteria.</returns>
     public async Task<IEnumerable<Brand?>> GetBrandsAsync(Expression<Func<Brand, bool>> predicate,
                                                           bool asNoTracking,
                                                           CancellationToken cancellationToken = default)
@@ -120,7 +118,7 @@ public class BrandRepository(InventoryDbContext context) : IBrandRepository
     /// <summary>
     /// Asynchronously saves all pending changes to the database context.
     /// </summary>
-    /// <param name="cancellationToken">A token to observe while waiting for the operation to complete, allowing the operation to be canceled.</param>
+    /// <param name="cancellationToken">A token to observe while waiting for the operation to complete, allowing the operation to be cancelled.</param>
     /// <returns>A task that represents the asynchronous save operation.</returns>
     public async Task SaveChangesAsync(CancellationToken cancellationToken = default)
     {

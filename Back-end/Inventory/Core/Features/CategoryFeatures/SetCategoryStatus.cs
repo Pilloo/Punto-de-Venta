@@ -1,36 +1,26 @@
-﻿using System.ComponentModel.DataAnnotations;
-using DTOs.Inventory;
-using DTOs.Inventory.category;
-using DTOs.Inventory.Colour;
+﻿using DTOs.Inventory.category;
 using ErrorHandling;
 using ErrorHandling.Service;
 using Inventory.Core.Interfaces;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using Models;
+using Models.Inventory;
 
 namespace Inventory.Core.Features.CategoryFeatures;
 
 /// <summary>
-/// A command encapsulating the operation to set the status of a category in the inventory system.
+/// Represents a command to set the status of a category within the inventory system.
 /// </summary>
 /// <remarks>
-/// This command is part of the Inventory.Core application layer and is designed to be handled
-/// by an implementation of <see cref="IRequestHandler{TRequest, TResponse}"/>. It modifies
-/// the status (e.g. active or inactive) of a category identified by its unique identifier.
+/// This command is used to toggle the availability or active state of a specific category
+/// using its unique identifier. It encapsulates the necessary data required to perform
+/// the status update operation.
 /// </remarks>
-/// <example>
-/// Use this command to change the status of a category by supplying the category's identifier and
-/// the desired status (active or inactive). Typically, this command is created from a DTO
-/// of type <see cref="SetCategoryStatusRequest"/>.
-/// </example>
-/// <seealso cref="Result{T}"/>
-/// <seealso cref="ICategoryRepository"/>
-public class SetCategoryStatusCommand : IRequest<Result<Unit>>
+public record SetCategoryStatusCommand : IRequest<Result<Unit>>
 {
-    public Guid Id { get; set; } = Guid.Empty;
+    public Guid Id { get; private init; } = Guid.Empty;
 
-    public bool Status { get; set; } = false;
+    public bool Status { get; private init; }
 
     public static SetCategoryStatusCommand FromDto(Guid id, SetCategoryStatusRequest request) => new()
     {

@@ -4,7 +4,7 @@ using ErrorHandling.Service;
 using Inventory.Core.Interfaces;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using Models;
+using Models.Inventory;
 
 namespace Inventory.Core.Features.CategoryFeatures;
 
@@ -20,7 +20,7 @@ namespace Inventory.Core.Features.CategoryFeatures;
 /// <seealso cref="Result{T}"/>
 public record GetCategoryByIdQuery : IRequest<Result<CategoryResponse>>
 {
-    public Guid Id { get; init; } = Guid.Empty;
+    public Guid Id { get; private init; } = Guid.Empty;
 
     public static GetCategoryByIdQuery FromQueryParams(Guid id) => new()
     {

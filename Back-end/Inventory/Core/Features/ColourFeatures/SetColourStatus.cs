@@ -1,35 +1,25 @@
-﻿using System.ComponentModel.DataAnnotations;
-using DTOs.Inventory;
-using DTOs.Inventory.Colour;
+﻿using DTOs.Inventory.Colour;
 using ErrorHandling;
 using ErrorHandling.Service;
 using Inventory.Core.Interfaces;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using Models;
+using Models.Inventory;
 
 namespace Inventory.Core.Features.ColourFeatures;
 
 /// <summary>
-/// A command encapsulating the operation to set the status of a colour in the inventory system.
+/// Represents a command to update the status of a colour entity in the inventory system.
 /// </summary>
 /// <remarks>
-/// This command is part of the Inventory.Core application layer and is designed to be handled
-/// by an implementation of <see cref="IRequestHandler{TRequest, TResponse}"/>. It modifies
-/// the status (e.g. active or inactive) of a colour identified by its unique identifier.
+/// This command encapsulates the necessary data to modify the status of a colour resource,
+/// including the unique identifier of the target entity and the desired status.
 /// </remarks>
-/// <example>
-/// Use this command to change the status of a colour by supplying the colour's identifier and
-/// the desired status (active or inactive). Typically, this command is created from a DTO
-/// of type <see cref="SetColourStatusRequest"/>.
-/// </example>
-/// <seealso cref="Result{T}"/>
-/// <seealso cref="IColourRepository"/>
-public class SetColourStatusCommand : IRequest<Result<Unit>>
+public record SetColourStatusCommand : IRequest<Result<Unit>>
 {
-    public Guid Id { get; set; } = Guid.Empty;
+    public Guid Id { get; private init; } = Guid.Empty;
 
-    public bool Status { get; set; } = false;
+    public bool Status { get; private init; }
 
     public static SetColourStatusCommand FromDto(Guid id, SetColourStatusRequest request) => new()
     {
@@ -64,13 +54,13 @@ public class SetColourStatusCommandHandler(
         catch (OperationCanceledException)
         {
             logger.LogInformation("Update operation cancelled for Product entity.");
-            
+
             return Result<Unit>.Failure(errorFactory.Create(new OperationCanceled()));
         }
         catch (Exception e)
         {
             logger.LogError(e, e.Message);
-            
+
             return Result<Unit>.Failure(errorFactory.Create(new InternalError()));
         }
     }

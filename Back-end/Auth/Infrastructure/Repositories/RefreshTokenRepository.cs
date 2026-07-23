@@ -8,22 +8,16 @@ namespace AuthModule.Infrastructure.Repositories
     public class RefreshTokenRepository(AuthDbContext context) : IRefreshTokenRepository
     {
         /// <summary>
-        /// Asynchronously saves the specified refresh token to the data store.
+        /// Asynchronously saves a new refresh token to the database.
         /// </summary>
-        /// <param name="token">The refresh token to persist. Cannot be null.</param>
+        /// <param name="token">The refresh token to be saved to the database.</param>
+        /// <param name="ct">A cancellation token that can be used to cancel the asynchronous operation.</param>
         /// <returns>A task that represents the asynchronous save operation.</returns>
         public async Task SaveRefreshTokenAsync(RefreshToken token, CancellationToken ct)
         {
-            try
-            {
-                context.RefreshTokens.Add(token);
+            context.RefreshTokens.Add(token);
 
-                await context.SaveChangesAsync(ct);
-            }
-            catch
-            {
-                throw;
-            }
+            await context.SaveChangesAsync(ct);
         }
 
         /// <summary>
@@ -35,20 +29,13 @@ namespace AuthModule.Infrastructure.Repositories
         /// <see cref="RefreshToken"/> for the specified user, or <see langword="null"/> if no such token exists.</returns>
         public async Task<RefreshToken?> GetRefreshTokenInformationAsync(Guid userId, CancellationToken ct)
         {
-            try
-            {
-                RefreshToken? operationResult = await context.RefreshTokens.Where(x => x.IsRevoked == false)
-                                                                           .Where(x => x.UserId == userId)
-                                                                           .OrderByDescending(x => x.CreatedAt)
-                                                                           .AsNoTracking()
-                                                                           .FirstOrDefaultAsync(ct);
+            RefreshToken? operationResult = await context.RefreshTokens.Where(x => x.IsRevoked == false)
+                                                         .Where(x => x.UserId == userId)
+                                                         .OrderByDescending(x => x.CreatedAt)
+                                                         .AsNoTracking()
+                                                         .FirstOrDefaultAsync(ct);
 
-                return operationResult;
-            }
-            catch
-            {
-                throw;
-            }
+            return operationResult;
         }
 
         /// <summary>
@@ -62,19 +49,11 @@ namespace AuthModule.Infrastructure.Repositories
         /// <returns>A task that represents the asynchronous operation.</returns>
         public async Task RevokeAllRefreshTokenAsync(Guid userId, CancellationToken ct)
         {
-            try
-            {
-                IQueryable<RefreshToken> refreshTokens = context.RefreshTokens.Where(x => x.UserId == userId && !x.IsRevoked);
+            IQueryable<RefreshToken> refreshTokens =
+                context.RefreshTokens.Where(x => x.UserId == userId && !x.IsRevoked);
 
-                // Executes the action directly on the DB.
-                await refreshTokens.ExecuteUpdateAsync(s => s.SetProperty(t => t.IsRevoked, true), ct);
-
-                return;
-            }
-            catch
-            {
-                throw;
-            }
+            // Executes the action directly on the DB.
+            await refreshTokens.ExecuteUpdateAsync(s => s.SetProperty(t => t.IsRevoked, true), ct);
         }
 
         /// <summary>
@@ -88,20 +67,15 @@ namespace AuthModule.Infrastructure.Repositories
         /// <returns>A task that represents the asynchronous operation.</returns>
         public async Task RevokeSpecificRefreshTokenAsync(Guid userId, string refreshToken, CancellationToken ct)
         {
-            try
-            {
-                RefreshToken? token = await context.RefreshTokens.Where(x => x.UserId == userId && x.Token == refreshToken).FirstOrDefaultAsync(ct);
+            RefreshToken? token = await context.RefreshTokens
+                                               .Where(x => x.UserId == userId && x.Token == refreshToken)
+                                               .FirstOrDefaultAsync(ct);
 
-                if (token == null) return;
+            if (token == null) return;
 
-                token.IsRevoked = true;
+            token.IsRevoked = true;
 
-                await context.SaveChangesAsync(ct);
-            }
-            catch
-            {
-                throw;
-            }
+            await context.SaveChangesAsync(ct);
         }
     }
 }

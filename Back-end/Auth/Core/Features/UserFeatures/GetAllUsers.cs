@@ -5,10 +5,26 @@ using ErrorHandling;
 using ErrorHandling.Service;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using Models;
+using Models.Auth;
 
 namespace AuthModule.Core.Features.UserFeatures;
 
+/// <summary>
+/// Represents a query to retrieve a paginated list of user data with optional filtering for active or inactive users.
+/// </summary>
+/// <remarks>
+/// This query is designed to handle scenarios where user information needs to be fetched
+/// with pagination and filtering by the user's active status. The query returns a result containing
+/// a <see cref="Result{T}" /> object that wraps a <see cref="PagedResult{T}" /> of <see cref="UserResponse" />.
+/// </remarks>
+/// <example>
+/// This query can be constructed using query parameters from a <see cref="GetAllUserRequest" /> object
+/// by calling the static factory method <see cref="GetAllUsersQuery.FromQueryParams" />.
+/// </example>
+/// <seealso cref="GetAllUserRequest" />
+/// <seealso cref="UserResponse" />
+/// <seealso cref="Result{T}" />
+/// <seealso cref="PagedResult{T}" />
 public record GetAllUsersQuery : IRequest<Result<PagedResult<UserResponse>>>
 {
     public bool? Active { get; private init; }

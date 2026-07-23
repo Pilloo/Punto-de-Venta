@@ -6,7 +6,7 @@ using ErrorHandling.Service;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
-using Models;
+using Models.Auth;
 
 namespace AuthModule.Core.Features.AuthFeatures;
 

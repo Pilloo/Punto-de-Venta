@@ -6,6 +6,7 @@ using Inventory.Core.Interfaces;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using Models;
+using Models.Inventory;
 
 namespace Inventory.Core.Features.BrandFeatures;
 

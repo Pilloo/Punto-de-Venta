@@ -1,12 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
-using DTOs.Inventory;
-using DTOs.Inventory.Brand;
+﻿using DTOs.Inventory.Brand;
 using ErrorHandling;
 using ErrorHandling.Service;
 using Inventory.Core.Interfaces;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using Models;
+using Models.Inventory;
 
 namespace Inventory.Core.Features.BrandFeatures;
 
@@ -16,7 +14,7 @@ namespace Inventory.Core.Features.BrandFeatures;
 /// <remarks>
 /// This command is part of the Inventory.Core application layer and is designed to be handled
 /// by an implementation of <see cref="IRequestHandler{TRequest, TResponse}"/>. It modifies
-/// the status (e.g., active or inactive) of a brand identified by its unique identifier.
+/// the status (e.g. active or inactive) of a brand identified by its unique identifier.
 /// </remarks>
 /// <example>
 /// Use this command to change the status of a brand by supplying the brand's identifier and
@@ -25,11 +23,11 @@ namespace Inventory.Core.Features.BrandFeatures;
 /// </example>
 /// <seealso cref="Result{T}"/>
 /// <seealso cref="IBrandRepository"/>
-public class SetBrandStatusCommand : IRequest<Result<Unit>>
+public record SetBrandStatusCommand : IRequest<Result<Unit>>
 {
-    [Required] public Guid Id { get; set; } = Guid.Empty;
+    public Guid Id { get; private init; } = Guid.Empty;
 
-    [Required] public bool Status { get; set; } = false;
+    public bool Status { get; private init; }
 
     public static SetBrandStatusCommand FromDto(Guid id, SetBrandStatusRequest request) => new()
     {
@@ -64,13 +62,13 @@ public class SetBrandStatusCommandHandler(
         catch (OperationCanceledException)
         {
             logger.LogInformation("Update operation cancelled for Product entity.");
-            
+
             return Result<Unit>.Failure(errorFactory.Create(new OperationCanceled()));
         }
         catch (Exception e)
         {
             logger.LogError(e, e.Message);
-            
+
             return Result<Unit>.Failure(errorFactory.Create(new InternalError()));
         }
     }

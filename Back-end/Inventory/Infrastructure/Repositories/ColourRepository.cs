@@ -2,7 +2,7 @@
 using Inventory.Core.Interfaces;
 using Inventory.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
-using Models;
+using Models.Inventory;
 
 namespace Inventory.Infrastructure.Repositories;
 
@@ -25,7 +25,7 @@ public class ColourRepository(InventoryDbContext context) : IColourRepository
     /// Asynchronously retrieves a colour from the database based on the specified identifier.
     /// </summary>
     /// <param name="id">The unique identifier of the colour to retrieve.</param>
-    /// <param name="asNoTracking">A boolean value indicating whether the retrieved entity should not be tracked by the context.</param>
+    /// <param name="asNoTracking">A boolean value indicating whether the context should not track the retrieved entity.</param>
     /// <param name="cancellationToken">A cancellation token that can be used to cancel the operation.</param>
     /// <returns>A task that represents the asynchronous operation. The task result contains the colour entity if found, otherwise null.</returns>
     public async Task<Colour?> GetColourAsync(Guid id, bool asNoTracking, CancellationToken cancellationToken = default)

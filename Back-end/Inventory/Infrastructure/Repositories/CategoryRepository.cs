@@ -2,7 +2,7 @@
 using Inventory.Core.Interfaces;
 using Inventory.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
-using Models;
+using Models.Inventory;
 
 namespace Inventory.Infrastructure.Repositories;
 
@@ -46,12 +46,14 @@ public class CategoryRepository(InventoryDbContext context) : ICategoryRepositor
     }
 
     /// <summary>
-    /// Asynchronously retrieves a paginated list of categories from the database.
+    /// Asynchronously retrieves a paginated list of categories, with optional filtering for active or inactive categories.
     /// </summary>
-    /// <param name="pageNumber">The page number to retrieve, where the first page is 1.</param>
-    /// <param name="pageSize">The number of categories to retrieve per page.</param>
+    /// <param name="active">A flag indicating whether to filter for active categories. If null, no filtering by activity status will be applied.</param>
+    /// <param name="includeInactive">A flag indicating whether to include inactive categories when no specific filtering is specified by the <paramref name="active"/> parameter.</param>
+    /// <param name="pageNumber">The page number for pagination. Defaults to 1.</param>
+    /// <param name="pageSize">The number of items per page for pagination. Defaults to 10.</param>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
-    /// <returns>A <see cref="Task"/> representing the asynchronous operation. The result contains a tuple where the first item is the collection of categories and the second item is the total count of categories.</returns>
+    /// <returns>A task that represents the asynchronous operation. The result contains a tuple with a read-only list of <see cref="Category"/> items and the total item count.</returns>
     public async Task<(IReadOnlyList<Category> Items, int ItemCount)> GetAllCategoriesAsync(
         bool? active, bool? includeInactive, int pageNumber = 1, int pageSize = 10,
         CancellationToken cancellationToken = default)
@@ -84,7 +86,7 @@ public class CategoryRepository(InventoryDbContext context) : ICategoryRepositor
     /// <param name="predicate">The filter criteria as an expression used to select specific categories.</param>
     /// <param name="asNoTracking">Indicates whether the entities should be retrieved without tracking changes.</param>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
-    /// <returns>A <see cref="Task"/> representing the asynchronous operation, containing an enumerable of matching <see cref="Category"/> objects.</returns>
+    /// <returns>A <see cref="Task"/> which represents an asynchronous operation, containing an <see cref="IEnumerable{T}"/> of matching <see cref="Category"/> objects.</returns>
     public async Task<IEnumerable<Category>> GetCategoriesAsync(Expression<Func<Category, bool>> predicate,
                                                                 bool asNoTracking,
                                                                 CancellationToken cancellationToken = default)

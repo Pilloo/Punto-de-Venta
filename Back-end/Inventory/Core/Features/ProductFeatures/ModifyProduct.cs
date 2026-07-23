@@ -4,7 +4,7 @@ using ErrorHandling.Service;
 using Inventory.Core.Interfaces;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using Models;
+using Models.Inventory;
 
 namespace Inventory.Core.Features.ProductFeatures;
 
@@ -20,20 +20,20 @@ namespace Inventory.Core.Features.ProductFeatures;
 /// <seealso cref="IRequestHandler{TRequest,TResponse}"/>
 public class ModifyProductCommand : IRequest<Result<Unit>>
 {
-    public Guid Id { get; init; }
+    public Guid Id { get; private init; }
 
-    public Guid? BrandId { get; set; }
-    public Guid? ColourId { get; set; }
-    public Guid? CategoryId { get; set; }
+    public Guid? BrandId { get; private init; }
+    public Guid? ColourId { get; private init; }
+    public Guid? CategoryId { get; private init; }
 
-    public string? ItemSummary { get; set; }
+    public string? ItemSummary { get; private init; }
 
-    public string? BarcodeContent { get; set; }
+    public string? BarcodeContent { get; private init; }
 
-    public int? StockCount { get; set; }
-    public int? MinimumStockLevel { get; set; }
+    public int? StockCount { get; private init; }
+    public int? MinimumStockLevel { get; private init; }
 
-    public decimal? Price { get; set; }
+    public decimal? Price { get; private init; }
 
     public static ModifyProductCommand FromDto(ModifyProductRequest request) => new()
     {
@@ -73,7 +73,7 @@ public class ModifyProductHandler(
             entity.StockCount = command.StockCount ?? entity.StockCount;
             entity.MinimumStockLevel = command.MinimumStockLevel ?? entity.MinimumStockLevel;
             entity.Price = command.Price ?? entity.Price;
-            
+
             await repository.SaveChangesAsync(cancellationToken);
 
             return Result<Unit>.Success(Unit.Value);

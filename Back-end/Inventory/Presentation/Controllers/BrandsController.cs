@@ -9,6 +9,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Models;
+using Models.Inventory;
 
 namespace Inventory.Presentation.Controllers;
 

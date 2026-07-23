@@ -1,36 +1,28 @@
-﻿using DTOs.Inventory;
-using DTOs.Inventory.Category;
-using DTOs.Inventory.Colour;
+﻿using DTOs.Inventory.Category;
 using ErrorHandling;
 using ErrorHandling.Service;
-using Inventory.Core.Features.BrandFeatures;
 using Inventory.Core.Interfaces;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using Models;
+using Models.Inventory;
 
 namespace Inventory.Core.Features.CategoryFeatures;
 
 /// <summary>
-/// Represents a command to modify the details of an existing category in the system.
+/// Represents a command to modify an existing category in the inventory system.
 /// </summary>
 /// <remarks>
-/// <para>
-/// This command is used to update the information of a category such as its name using the category's unique identifier.
-/// </para>
-/// <para>
-/// The command follows the CQRS (Command Query Responsibility Segregation) pattern and is processed by
-/// a dedicated handler.
-/// </para>
+/// The <c>ModifyCategoryCommand</c> contains the data required to update a category, such as its unique identifier
+/// and the new name. It implements the <c>IRequest&lt;Result&lt;Unit&gt;&gt;</c> interface, enabling it to be
+/// handled via MediatR for asynchronous processing.
 /// </remarks>
 /// <example>
-/// The process of handling this command can result in either a successful execution or a failure with
-/// structured error details provided by the <see cref="Result"/> class.
+/// This command may be used by a handler to update category information in the repository.
 /// </example>
 public record ModifyCategoryCommand : IRequest<Result<Unit>>
 {
-    public Guid Id { get; init; }
-    public string Name { get; init; } = string.Empty;
+    public Guid Id { get; private init; }
+    public string Name { get; private init; } = string.Empty;
 
     public static ModifyCategoryCommand FromDto(Guid id, ModifyCategoryRequest request) => new()
     {

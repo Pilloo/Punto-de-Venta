@@ -1,9 +1,9 @@
 ﻿using AuthModule.Core.Pipelines;
-using AuthModule.Core.Features;
 using ErrorHandling;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
+using AuthModule.Core.Features.UserFeatures;
 using DTOs.Auth;
 
 namespace AuthModule.Core.Extensions

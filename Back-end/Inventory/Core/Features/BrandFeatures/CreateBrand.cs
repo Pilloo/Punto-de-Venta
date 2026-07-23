@@ -1,11 +1,11 @@
-﻿using DTOs.Inventory;
-using DTOs.Inventory.Brand;
+﻿using DTOs.Inventory.Brand;
 using EntityFramework.Exceptions.Common;
 using ErrorHandling;
 using ErrorHandling.Service;
 using Inventory.Core.Interfaces;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using Models.Inventory;
 
 namespace Inventory.Core.Features.BrandFeatures;
 
@@ -35,7 +35,7 @@ public class CreateBrandHandler(
     {
         try
         {
-            Models.Brand brand = new()
+            Brand brand = new()
             {
                 Name = command.Name
             };
@@ -44,10 +44,10 @@ public class CreateBrandHandler(
 
             return Result<Unit>.Success(Unit.Value);
         }
-        catch (UniqueConstraintException e)
+        catch (ReferenceConstraintException e)
         {
             logger.LogInformation(e, "Duplicated entity insertion detected. Constraint violated: {constraint}",
-                                  e.ConstraintName);
+                                  e.ConstraintProperties[0]);
 
             return Result<Unit>.Failure(errorFactory.Create(new DuplicatedEntity()));
         }

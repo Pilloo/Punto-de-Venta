@@ -4,15 +4,21 @@ using ErrorHandling.Service;
 using Inventory.Core.Interfaces;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using Models;
+using Models.Inventory;
 
 namespace Inventory.Core.Features.ColourFeatures;
 
-
+/// <summary>
+/// Represents a query to retrieve a colour by its unique identifier.
+/// </summary>
+/// <remarks>
+/// This query is part of the application's CQRS pattern and is handled by <see cref="GetColourByIdQueryHandler"/>.
+/// It retrieves the data of a specific colour from the inventory system.
+/// </remarks>
 public record GetColourByIdQuery : IRequest<Result<ColourResponse>>
 {
     public Guid Id { get; init; } = Guid.Empty;
-    
+
     public static GetColourByIdQuery FromQueryParams(Guid id) => new()
     {
         Id = id
@@ -37,7 +43,7 @@ public class GetColourByIdQueryHandler(
             }
 
             ColourResponse response = ColourResponse.FromEntity(colour);
-            
+
             return Result<ColourResponse>.Success(response);
         }
         catch (Exception e)

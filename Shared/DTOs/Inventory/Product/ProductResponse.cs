@@ -22,7 +22,7 @@ public class ProductResponse
 
     public bool Active { get; init; }
 
-    public static ProductResponse FromEntity(Models.Product product) => new()
+    public static ProductResponse FromEntity(Models.Inventory.Product product) => new()
     {
         Id = product.Id,
         ItemSummary = product.ItemSummary,
@@ -30,8 +30,8 @@ public class ProductResponse
         StockCount = product.StockCount,
         Price = product.Price,
         Active = product.IsActive,
-        Brand = BrandResponse.FromEntity(product.Brand),
-        Colour = ColourResponse.FromEntity(product.Colour),
-        Category = CategoryResponse.FromEntity(product.Category)
+        Brand = BrandResponse.FromEntity(product.Brand!),
+        Colour = ColourResponse.FromEntity(product.Colour!),
+        Category = CategoryResponse.FromEntity(product.Category!)
     };
 }

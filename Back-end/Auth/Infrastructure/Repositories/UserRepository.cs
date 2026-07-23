@@ -1,8 +1,8 @@
 ﻿using AuthModule.Core.Interfaces;
 using AuthModule.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
-using Models;
 using System.Linq.Expressions;
+using Models.Auth;
 
 namespace AuthModule.Infrastructure.Repositories
 {
@@ -19,7 +19,7 @@ namespace AuthModule.Infrastructure.Repositories
         /// A lambda expression that defines the filtering criteria to identify the desired users.
         /// </param>
         /// <param name="asNoTracking">
-        /// If <c>true</c>, the query will use no-tracking mode to optimize performance for read-only operations.
+        /// If <c>true</c>, the query will use no-tracking mode to optimise performance for read-only operations.
         /// </param>
         /// <param name="pageNumber">
         /// The page number to retrieve, used for paginated results. Defaults to 1.
@@ -36,11 +36,11 @@ namespace AuthModule.Infrastructure.Repositories
         /// - An <see cref="int"/> representing the total count of users that satisfy the filtering criteria.
         /// </returns>
         /// <remarks>
-        /// This method supports pagination and no-tracking optimizations. The total count of users matching the
+        /// This method supports pagination and no-tracking optimisations. The total count of users matching the
         /// filtering criteria is also included in the result to aid in paginated display.
         /// </remarks>
         /// <exception cref="OperationCanceledException">
-        /// Thrown if the operation is canceled via the provided cancellation token.
+        /// Thrown if the operation is cancelled via the provided cancellation token.
         /// </exception>
         public async Task<(IReadOnlyCollection<User> users, int userCount)> GetUsersAsync(
             Expression<Func<User, bool>> predicate,
@@ -91,12 +91,12 @@ namespace AuthModule.Infrastructure.Repositories
         /// - An <see cref="int"/> representing the total count of users in the database, prior to pagination.
         /// </returns>
         /// <remarks>
-        /// This method uses no-tracking mode to optimize performance for read-only operations.
+        /// This method uses no-tracking mode to optimise performance for read-only operations.
         /// When filtering by active status, the most precise filter is applied based on the provided arguments.
         /// The result supports pagination to limit the volume of returned data.
         /// </remarks>
         /// <exception cref="OperationCanceledException">
-        /// Thrown if the operation is canceled via the provided cancellation token.
+        /// Thrown if the operation is cancelled via the provided cancellation token.
         /// </exception>
         public async Task<(IReadOnlyCollection<User> users, int userCount)> GetAllUsersAsync(
             bool? active = null,
@@ -133,7 +133,7 @@ namespace AuthModule.Infrastructure.Repositories
         /// A lambda expression that specifies the filtering criteria to identify the desired user.
         /// </param>
         /// <param name="asNoTracking">
-        /// If <c>true</c>, uses no-tracking mode to optimize performance for read-only operations.
+        /// If <c>true</c>, uses no-tracking mode to optimise performance for read-only operations.
         /// </param>
         /// <param name="includeInactive">
         /// If <c>true</c>, includes inactive users in the search; otherwise, only active users are considered.
@@ -145,10 +145,10 @@ namespace AuthModule.Infrastructure.Repositories
         /// A <see cref="User"/> object that matches the specified criteria, or <c>null</c> if no user is found.
         /// </returns>
         /// <remarks>
-        /// The method supports filtering active or inactive users based on the <paramref name="includeInactive"/> parameter and leverages no-tracking mode for read-only optimizations.
+        /// The method supports filtering active or inactive users based on the <paramref name="includeInactive"/> parameter and leverages no-tracking mode for read-only optimisations.
         /// </remarks>
         /// <exception cref="OperationCanceledException">
-        /// Thrown if the operation is canceled via the provided cancellation token.
+        /// Thrown if the operation is cancelled via the provided cancellation token.
         /// </exception>
         public async Task<User?> GetUserAsync(Expression<Func<User, bool>> predicate, bool asNoTracking = true,
                                               bool includeInactive = false, CancellationToken ct = default)

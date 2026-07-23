@@ -8,7 +8,7 @@ public record BrandResponse
     public string Name { get; set; } = string.Empty;
     public bool Active { get; set; }
 
-    public static BrandResponse FromEntity(Models.Brand brand) => new()
+    public static BrandResponse FromEntity(Models.Inventory.Brand brand) => new()
     {
         Id = brand.Id,
         Name = brand.Name,

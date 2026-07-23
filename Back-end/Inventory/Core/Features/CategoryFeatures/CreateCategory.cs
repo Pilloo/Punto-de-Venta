@@ -1,12 +1,11 @@
 ﻿using DTOs.Inventory.Category;
-using DTOs.Inventory.Colour;
 using EntityFramework.Exceptions.Common;
 using ErrorHandling;
 using ErrorHandling.Service;
 using Inventory.Core.Interfaces;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using Models;
+using Models.Inventory;
 
 namespace Inventory.Core.Features.CategoryFeatures;
 

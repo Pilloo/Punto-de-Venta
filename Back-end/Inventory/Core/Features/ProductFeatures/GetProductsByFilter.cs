@@ -1,20 +1,28 @@
-﻿using System.Linq.Expressions;
-using DTOs;
+﻿using DTOs;
 using DTOs.Inventory.Product;
 using ErrorHandling;
 using ErrorHandling.Service;
 using Inventory.Core.Interfaces;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using Models;
 using LinqKit;
 using Microsoft.EntityFrameworkCore;
+using Models.Inventory;
 
 namespace Inventory.Core.Features.ProductFeatures;
 
+/// <summary>
+/// Represents a query used to retrieve a paginated list of products filtered by specific criteria.
+/// </summary>
+/// <remarks>
+/// This query is implemented to facilitate filtering and pagination of products in the inventory.
+/// It uses the provided filter criteria through a <see cref="GetProductsQueryFilter"/> object.
+/// The result is wrapped in a <see cref="Result{T}"/> object containing a <see cref="PagedResult{T}"/>
+/// of type <see cref="ProductResponse"/>.
+/// </remarks>
 public class GetProductsByFilterQuery : IRequest<Result<PagedResult<ProductResponse>>>
 {
-    public GetProductsQueryFilter Filter { get; init; } = new();
+    public GetProductsQueryFilter Filter { get; private init; } = new();
 
     public static GetProductsByFilterQuery FromDto(GetProductsQueryFilter filter) => new()
     {

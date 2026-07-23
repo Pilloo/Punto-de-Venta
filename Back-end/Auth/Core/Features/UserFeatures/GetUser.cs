@@ -4,22 +4,21 @@ using ErrorHandling;
 using ErrorHandling.Service;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using Models;
+using Models.Auth;
 
 namespace AuthModule.Core.Features.UserFeatures;
 
 /// <summary>
-/// Represents a query to retrieve a user by their unique identifier, with an optional filter
-/// to include inactive users in the results.
+/// Represents a query to retrieve a user by their unique identifier.
 /// </summary>
 /// <remarks>
-/// This query is used in the context of a request-response pattern, particularly with MediatR,
-/// where it returns a <see cref="Result{T}"/> containing a <see cref="User"/> object or an error.
+/// This query is used to fetch a user's details based on their <see cref="UserId"/>.
+/// It supports optionally including inactive users during the query.
 /// </remarks>
 public record GetUserByIdQuery : IRequest<Result<UserResponse>>
 {
     public Guid UserId { get; init; }
-    public bool IncludeInactiveUsers { get; init; } = false;
+    public bool IncludeInactiveUsers { get; init; }
 
     public static GetUserByIdQuery FromQueryParams(Guid userId, bool includeInactiveUsers) => new()
     {

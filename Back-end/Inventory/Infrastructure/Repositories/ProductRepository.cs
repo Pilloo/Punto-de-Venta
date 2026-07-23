@@ -2,7 +2,7 @@
 using Inventory.Core.Interfaces;
 using Inventory.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
-using Models;
+using Models.Inventory;
 
 namespace Inventory.Infrastructure.Repositories;
 
@@ -90,14 +90,15 @@ public class ProductRepository(InventoryDbContext context) : IProductRepository
     }
 
     /// <summary>
-    /// Asynchronously retrieves a filtered collection of products from the database.
+    /// Asynchronously retrieves a collection of products that match the specified criteria.
     /// </summary>
-    /// <param name="predicate">The filtering expression to apply to the products.</param>
-    /// <param name="asNoTracking">Indicates whether the entities should be retrieved without tracking their state in the context.</param>
-    /// <param name="pageNumber">The page number for pagination, or null to retrieve all results.</param>
-    /// <param name="pageSize">The page size for pagination or null to retrieve all results.</param>
+    /// <param name="predicate">A filter expression to match the desired products.</param>
+    /// <param name="asNoTracking">Indicates whether the query should be executed with no tracking.</param>
+    /// <param name="includeRelatedEntities">Determines if related entities should be included in the query.</param>
+    /// <param name="pageNumber">The page number for paginated results. Defaults to 1.</param>
+    /// <param name="pageSize">The number of items per page for paginated results. Defaults to 20.</param>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
-    /// <returns>A task that represents the asynchronous operation containing a collection of products that match the filter.</returns>
+    /// <returns>A task that represents the asynchronous operation. The task result contains a tuple with a collection of matching products and the total count of products that match the filter.</returns>
     public async Task<(IReadOnlyCollection<Product> Items, int TotalCount)> GetProductsAsync(
         Expression<Func<Product, bool>> predicate,
         bool asNoTracking, bool includeRelatedEntities, int? pageNumber = 1,

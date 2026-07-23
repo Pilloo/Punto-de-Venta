@@ -1,13 +1,12 @@
-﻿
-using AuthModule.Core.Interfaces;
+﻿using AuthModule.Core.Interfaces;
 using AuthModule.Core.Domain;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
-using Models;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
+using Models.Auth;
 
 namespace AuthModule.Infrastructure.Services
 {
@@ -15,22 +14,19 @@ namespace AuthModule.Infrastructure.Services
     {
         private readonly IConfiguration _configuration;
         private readonly ILogger<IdentityService> _logger;
-        private readonly ICryptoService _cryptoService;
-        private readonly ECDsa _pubKey;
-        private readonly ECDsa _privKey;
         private readonly SigningCredentials _signinCredentials;
         private readonly IRefreshTokenRepository _refreshTokenRepository;
 
-        public IdentityService(IConfiguration configuration, ICryptoService cryptoService, ILogger<IdentityService> logger, IRefreshTokenRepository refreshTokenRepository)
+        public IdentityService(IConfiguration configuration, ICryptoService cryptoService,
+                               ILogger<IdentityService> logger, IRefreshTokenRepository refreshTokenRepository)
         {
             _configuration = configuration;
             _logger = logger;
-            _cryptoService = cryptoService;
             _refreshTokenRepository = refreshTokenRepository;
 
-            _pubKey = _cryptoService.LoadEcdsaKey(_configuration["Jwt:PublicKeyPath"]!);
-            _privKey = _cryptoService.LoadEcdsaKey(_configuration["Jwt:PrivateKeyPath"]!);
-            _signinCredentials = new SigningCredentials(new ECDsaSecurityKey(_privKey), SecurityAlgorithms.EcdsaSha256);
+            ECDsa privateKey = cryptoService.LoadEcdsaKey(_configuration["Jwt:PrivateKeyPath"]!);
+            _signinCredentials =
+                new SigningCredentials(new ECDsaSecurityKey(privateKey), SecurityAlgorithms.EcdsaSha256);
         }
 
         /// <summary>
@@ -44,12 +40,12 @@ namespace AuthModule.Infrastructure.Services
         /// as a string.</returns>
         public Task<string> GenerateAccessTokenAsync(User user)
         {
-            Claim[] claims = new[]
-            {
-                    new Claim(JwtRegisteredClaimNames.GivenName, user.GivenName),
-                    new Claim(JwtRegisteredClaimNames.FamilyName, user.LastName),
-                    new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString())
-            };
+            Claim[] claims =
+            [
+                new Claim(JwtRegisteredClaimNames.GivenName, user.GivenName),
+                new Claim(JwtRegisteredClaimNames.FamilyName, user.LastName),
+                new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString())
+            ];
 
             SecurityTokenDescriptor tokenDescriptor = new SecurityTokenDescriptor
             {

@@ -2,13 +2,11 @@
 using AuthModule.Infrastructure.Persistence;
 using AuthModule.Infrastructure.Repositories;
 using AuthModule.Infrastructure.Services;
-using Aspire.Microsoft.EntityFrameworkCore.SqlServer;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Identity;
-using Models;
+using Models.Auth;
 
 namespace AuthModule.Infrastructure.Extensions;
 
@@ -19,9 +17,9 @@ public static class InfrastructureServicesExtensions
         builder!.AddSqlServerDbContext<AuthDbContext>(connectionName: "auth-database");
 
         builder!.Services.AddTransient<IIdentityService, IdentityService>();
-        builder!.Services.AddTransient<ICryptoService, CryptoService>();
-        builder!.Services.AddTransient<IRefreshTokenRepository, RefreshTokenRepository>();
-        builder!.Services.AddTransient<IUserRepository, UserRepository>();
+        builder.Services.AddTransient<ICryptoService, CryptoService>();
+        builder.Services.AddTransient<IRefreshTokenRepository, RefreshTokenRepository>();
+        builder.Services.AddTransient<IUserRepository, UserRepository>();
         
         return builder;
     }
@@ -52,7 +50,5 @@ public static class InfrastructureServicesExtensions
         {
             throw new Exception(result.Errors.FirstOrDefault()!.Description);
         }
-
-        return;
     }
 }

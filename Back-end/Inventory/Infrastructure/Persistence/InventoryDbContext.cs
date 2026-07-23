@@ -1,6 +1,5 @@
-﻿using EntityFramework.Exceptions.SqlServer;
-using Microsoft.EntityFrameworkCore;
-using Models;
+﻿using Microsoft.EntityFrameworkCore;
+using Models.Inventory;
 
 namespace Inventory.Infrastructure.Persistence
 {

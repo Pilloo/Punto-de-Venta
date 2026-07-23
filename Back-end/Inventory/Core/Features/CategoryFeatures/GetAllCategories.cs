@@ -2,11 +2,10 @@
 using DTOs.Inventory.Category;
 using ErrorHandling;
 using ErrorHandling.Service;
-using Inventory.Core.Features.BrandFeatures;
 using Inventory.Core.Interfaces;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using Models;
+using Models.Inventory;
 
 namespace Inventory.Core.Features.CategoryFeatures;
 

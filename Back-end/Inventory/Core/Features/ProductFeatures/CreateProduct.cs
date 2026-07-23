@@ -5,7 +5,7 @@ using ErrorHandling.Service;
 using Inventory.Core.Interfaces;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using Models;
+using Models.Inventory;
 
 namespace Inventory.Core.Features.ProductFeatures;
 
@@ -17,20 +17,20 @@ namespace Inventory.Core.Features.ProductFeatures;
 /// add a new product to the inventory, including brand, colour, category,
 /// item summary, barcode details, stock levels, and pricing information.
 /// </remarks>
-public class CreateProductCommand : IRequest<Result<Unit>>
+public record CreateProductCommand : IRequest<Result<Unit>>
 {
-    public Guid? BrandId { get; set; } = Guid.Empty;
-    public Guid? CategoryId { get; set; } = Guid.Empty;
-    public Guid? ColourId { get; set; } = Guid.Empty;
+    public Guid? BrandId { get; private init; } = Guid.Empty;
+    public Guid? CategoryId { get; private init; } = Guid.Empty;
+    public Guid? ColourId { get; private init; } = Guid.Empty;
 
-    public string ItemSummary { get; set; } = string.Empty;
+    public string ItemSummary { get; private init; } = string.Empty;
 
-    public string BarcodeContent { get; set; } = string.Empty;
+    public string BarcodeContent { get; private init; } = string.Empty;
 
-    public int StockCount { get; set; } = 0;
-    public int MinimumStockLevel { get; set; } = 0;
+    public int StockCount { get; private init; }
+    public int MinimumStockLevel { get; private init; }
 
-    public decimal Price { get; set; } = 0;
+    public decimal Price { get; private init; }
 
     public static CreateProductCommand FromDto(CreateProductRequest request) => new()
     {
@@ -55,7 +55,7 @@ public class CreateProductCommandHandler(
     {
         try
         {
-            (IReadOnlyCollection<Product> searchResult, int totalCount) = await repository.GetProductsAsync(
+            (_, int totalCount) = await repository.GetProductsAsync(
                 x => x.BarcodeContent.Contains(command.BarcodeContent), true, false, null, null, cancellationToken);
 
             if (totalCount > 0)

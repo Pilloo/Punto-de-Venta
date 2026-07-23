@@ -3,14 +3,22 @@ using ErrorHandling.Service;
 using Inventory.Core.Interfaces;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using Models;
+using Models.Inventory;
 
 namespace Inventory.Core.Features.ProductFeatures;
 
+/// <summary>
+/// Represents a command object for decreasing the stock of a product in the inventory system.
+/// </summary>
+/// <remarks>
+/// This command is part of the CQRS pattern and is used to encapsulate the operation of reducing the stock
+/// quantity of a specific product. The operation is carried out using the MediatR pipeline with the
+/// corresponding command handler.
+/// </remarks>
 public record DecreaseStockCommand : IRequest<Result<Unit>>
 {
-    public Guid Id { get; init; } = Guid.Empty;
-    public int Quantity { get; init; }
+    public Guid Id { get; private init; } = Guid.Empty;
+    public int Quantity { get; private init; }
 
     public static DecreaseStockCommand FromRequest(Guid id, int quantity) => new()
     {
@@ -49,13 +57,13 @@ public class DecreaseStockCommandHandler(
         catch (OperationCanceledException)
         {
             logger.LogInformation("Update operation cancelled for Product entity.");
-            
+
             return Result<Unit>.Failure(errorFactory.Create(new OperationCanceled()));
         }
         catch (Exception e)
         {
             logger.LogError(e, e.Message);
-            
+
             return Result<Unit>.Failure(errorFactory.Create(new InternalError()));
         }
     }

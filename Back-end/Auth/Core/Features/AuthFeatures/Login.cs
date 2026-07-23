@@ -5,7 +5,7 @@ using ErrorHandling.Service;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
-using Models;
+using Models.Auth;
 
 namespace AuthModule.Core.Features.AuthFeatures;
 
@@ -13,7 +13,7 @@ namespace AuthModule.Core.Features.AuthFeatures;
 /// Represents a command used for user authentication.
 /// </summary>
 /// <remarks>
-/// This command is utilized to authenticate a user by validating their credentials
+/// This command is utilised to authenticate a user by validating their credentials
 /// and optionally determining if the session should be persisted via the "RememberMe" property.
 /// </remarks>
 /// <example>
@@ -21,9 +21,9 @@ namespace AuthModule.Core.Features.AuthFeatures;
 /// </example>
 public record LoginCommand : IRequest<Result<TokenResponse>>
 {
-    public string Username { get; init; } = string.Empty;
-    public string Password { get; init; } = string.Empty;
-    public bool RememberMe { get; init; } = false;
+    public string Username { get; private init; } = string.Empty;
+    public string Password { get; private init; } = string.Empty;
+    public bool RememberMe { get; private init; }
 
     public static LoginCommand FromDto(LoginRequest request) => new()
     {

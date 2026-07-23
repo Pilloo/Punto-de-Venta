@@ -1,19 +1,19 @@
 ﻿using AuthModule.Core.Interfaces;
+using DTOs.Auth;
 using DTOs.Users;
 using ErrorHandling;
 using ErrorHandling.Service;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
-using Models;
-using System.ComponentModel.DataAnnotations;
+using Models.Auth;
 
-namespace AuthModule.Core.Features;
+namespace AuthModule.Core.Features.UserFeatures;
 
 /// <summary>
 /// Represents a command to modify an existing user's information in the system.
 /// This command is processed through the MediatR pipeline and may trigger
-/// validation and downstream processing behaviors before execution.
+/// validation and downstream processing behaviours before execution.
 /// </summary>
 /// <remarks>
 /// The command contains properties for updating various aspects of the user,
@@ -27,17 +27,17 @@ namespace AuthModule.Core.Features;
 /// </returns>
 public record ModifyUserCommand : IRequest<Result<Unit>>
 {
-    public Guid UserId { get; set; } = Guid.Empty;
+    public Guid UserId { get; private init; } = Guid.Empty;
 
-    public string GivenName { get; set; } = string.Empty;
+    public string GivenName { get; private init; } = string.Empty;
 
-    public string LastName { get; set; } = string.Empty;
+    public string LastName { get; private init; } = string.Empty;
 
-    public string UserName { get; set; } = string.Empty;
+    public string UserName { get; private init; } = string.Empty;
 
-    public string OldPassword { get; set; } = string.Empty;
+    public string OldPassword { get; private init; } = string.Empty;
     
-    public string NewPassword { get; set; } = string.Empty;
+    public string NewPassword { get; private init; } = string.Empty;
     
     public static ModifyUserCommand FromDto(ModifyUserRequest request) => new()
     {
@@ -53,7 +53,6 @@ public record ModifyUserCommand : IRequest<Result<Unit>>
 public class ModifyUserCommandHandler(
     UserManager<User> userManager,
     ErrorFactory errorFactory,
-    IIdentityService identityService,
     ILogger<ModifyUserCommandHandler> logger,
     IRefreshTokenRepository tokenRepository
 ) : IRequestHandler<ModifyUserCommand, Result<Unit>>

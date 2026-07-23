@@ -1,11 +1,10 @@
-﻿using DTOs.Inventory;
-using DTOs.Inventory.Brand;
+﻿using DTOs.Inventory.Brand;
 using ErrorHandling;
 using ErrorHandling.Service;
 using Inventory.Core.Interfaces;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using Models;
+using Models.Inventory;
 
 namespace Inventory.Core.Features.BrandFeatures;
 
@@ -23,13 +22,13 @@ namespace Inventory.Core.Features.BrandFeatures;
 /// </remarks>
 /// <example>
 /// The process of handling this command can result in either a successful execution or a failure with
-/// structured error details provided by the <see cref="Result"/> class.
+/// structured error details provided by the <see cref="Result{T}"/> class.
 /// </example>
 public record ModifyBrandCommand : IRequest<Result<Unit>>
 {
-    public Guid Id { get; init; }
-    public string Name { get; init; } = string.Empty;
-    
+    public Guid Id { get; private init; }
+    public string Name { get; private init; } = string.Empty;
+
     public static ModifyBrandCommand FromDto(Guid id, ModifyBrandRequest request) => new()
     {
         Id = id,
@@ -69,7 +68,7 @@ public class ModifyBrandHandler(
         catch (Exception e)
         {
             logger.LogError(e, e.Message);
-            
+
             return Result<Unit>.Failure(errorFactory.Create(new InternalError()));
         }
     }

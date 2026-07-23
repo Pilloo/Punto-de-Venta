@@ -1,37 +1,35 @@
-﻿using AuthModule.Core.Features;
-using DTOs.Auth;
+﻿using DTOs.Auth;
 using ErrorHandling;
 using ErrorHandling.Service;
 using MediatR;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
 using System.Security.Claims;
-using System.Text;
+using AuthModule.Core.Features.UserFeatures;
 
 namespace AuthModule.Core.Pipelines
 {
     /// <summary>
     /// Validates that the current HTTP user is authenticated and that the user's subject identifier matches the
     /// ModifyUserCommand.UserId before allowing the pipeline to continue; returns appropriate error results for
-    /// unauthorized access, cancellation, or internal failures.
+    /// unauthorised access, cancellation, or internal failures.
     /// </summary>
     /// <remarks>Short-circuits when invoked inside the module (no HttpContext), when the user is
     /// unauthenticated, or when the authenticated user's subject identifier does not match the command UserId. Catches
     /// OperationCanceledException and logs cancellation; catches other exceptions and returns an internal
     /// error.</remarks>
     /// <param name="httpContextAccessor">Provides access to the current HttpContext to retrieve the authenticated user.</param>
-    /// <param name="errorFactory">Creates standardized error instances used when validation fails or exceptions occur.</param>
+    /// <param name="errorFactory">Creates standardised error instances used when validation fails or exceptions occur.</param>
     /// <param name="logger">Logs informational and error events during validation and exception handling.</param>
     public class ModifyUserValidationPipeline(
-        IHttpContextAccessor httpContextAccessor, 
-        ErrorFactory errorFactory, 
+        IHttpContextAccessor httpContextAccessor,
+        ErrorFactory errorFactory,
         ILogger<ModifyUserValidationPipeline> logger
     ) : IPipelineBehavior<ModifyUserCommand, Result<TokenResponse>>
     {
-        public async Task<Result<TokenResponse>> Handle(ModifyUserCommand command, RequestHandlerDelegate<Result<TokenResponse>> next, CancellationToken ct)
+        public async Task<Result<TokenResponse>> Handle(ModifyUserCommand command,
+                                                        RequestHandlerDelegate<Result<TokenResponse>> next,
+                                                        CancellationToken ct)
         {
             try
             {
@@ -42,7 +40,7 @@ namespace AuthModule.Core.Pipelines
                 // Command is invoked from inside the module.
                 if (context == null)
                 {
-                    return await next();
+                    return await next(ct);
                 }
 
                 ClaimsPrincipal user = context.User;
@@ -59,14 +57,15 @@ namespace AuthModule.Core.Pipelines
                     return Result<TokenResponse>.Failure(errorFactory.Create(new UnauthorizedOperation()));
                 }
 
-                return await next();
+                return await next(ct);
             }
             catch (OperationCanceledException)
             {
                 logger.LogInformation("Operation canceled for User Id {userId}", command.UserId);
 
                 return Result<TokenResponse>.Failure(errorFactory.Create(new OperationCanceled()));
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 logger.LogError(ex, ex.Message);
 

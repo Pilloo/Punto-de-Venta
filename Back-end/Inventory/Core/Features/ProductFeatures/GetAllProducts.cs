@@ -5,10 +5,22 @@ using ErrorHandling.Service;
 using Inventory.Core.Interfaces;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using Models;
+using Models.Inventory;
 
 namespace Inventory.Core.Features.ProductFeatures;
 
+/// <summary>
+/// Represents a query to retrieve all products with optional filtering and pagination parameters.
+/// </summary>
+/// <remarks>
+/// This query is processed through the MediatR pipeline and yields a <see cref="Result{T}"/>
+/// object containing a paginated list of product data in the form of <see cref="PagedResult{T}"/>.
+/// </remarks>
+/// <example>
+/// The query supports optional filtering parameters such as retrieving active products and
+/// the inclusion of inactive ones. Results are controlled by the pagination parameters
+/// <see cref="PageNumber"/> and <see cref="PageSize"/>.
+/// </example>
 public class GetAllProductsQuery : IRequest<Result<PagedResult<ProductResponse>>>
 {
     public bool? Active { get; private init; }

@@ -1,21 +1,20 @@
-﻿using Models;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using Models.Auth;
 
 namespace AuthModule.Core.Domain
 {
     public class RefreshToken
     {
-        [Key] public Guid Id { get; set; }
+        [Key] public Guid Id { get; init; }
 
-        public Guid UserId { get; set; } = Guid.Empty;
-        public virtual User User { get; set; } = null!;
+        public Guid UserId { get; init; } = Guid.Empty;
+        public virtual User User { get; init; } = null!;
 
-        public string Token { get; set; } = string.Empty;
-        public DateTime ExpiresAt { get; set; } = DateTime.MinValue;
+        public string Token { get; init; } = string.Empty;
+        public DateTime ExpiresAt { get; init; } = DateTime.MinValue;
 
         public bool IsRevoked { get; set; }
 
-        public DateTime CreatedAt { get; set; }
+        public DateTime CreatedAt { get; init; }
     }
 }

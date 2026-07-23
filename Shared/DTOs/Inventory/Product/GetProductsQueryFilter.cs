@@ -1,8 +1,13 @@
 ﻿namespace DTOs.Inventory.Product;
 
 /// <summary>
-/// Represents a set of filters that can be applied when querying a list of products.
+/// Represents the filtering criteria for querying products.
 /// </summary>
+/// <remarks>
+/// This class is designed to encapsulate various filtering options that can be applied when querying
+/// a collection of products. It supports filtering by textual search, associated brand, category, colour,
+/// price range, stock count range, and active state. Additionally, it includes pagination properties.
+/// </remarks>
 public class GetProductsQueryFilter
 {
     public string? SearchTerm { get; set; } = string.Empty;

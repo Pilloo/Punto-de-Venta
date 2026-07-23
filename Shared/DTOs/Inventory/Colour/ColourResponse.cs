@@ -6,7 +6,7 @@ public class ColourResponse
     public string Name { get; set; } = string.Empty;
     public bool Active { get; set; }
 
-    public static ColourResponse FromEntity(Models.Colour colour) => new()
+    public static ColourResponse FromEntity(Models.Inventory.Colour colour) => new()
     {
         Id = colour.Id,
         Name = colour.Name,

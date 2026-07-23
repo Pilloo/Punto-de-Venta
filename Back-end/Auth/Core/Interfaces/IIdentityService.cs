@@ -1,4 +1,4 @@
-using Models;
+using Models.Auth;
 
 namespace AuthModule.Core.Interfaces;
 

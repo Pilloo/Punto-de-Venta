@@ -8,6 +8,7 @@ using Inventory.Core.Extensions;
 using Inventory.Presentation.Grpc;
 using Serilog.Templates;
 using Serilog.Enrichers.Span;
+using Serilog.Sinks.OpenTelemetry;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,6 +28,11 @@ Log.Logger = new LoggerConfiguration()
              .Enrich.WithSpan()
              .WriteTo.Console(formatter)
              .WriteTo.File(formatter: formatter, path: "Logs/applog-.txt", rollingInterval: RollingInterval.Day)
+             .WriteTo.OpenTelemetry(options =>
+             {
+                 options.Endpoint = Environment.GetEnvironmentVariable("OTEL_EXPORTER_OTLP_ENDPOINT");
+                 options.Protocol = OtlpProtocol.Grpc;
+             })
              .CreateLogger();
 
 builder.Host.UseSerilog();

@@ -1,13 +1,11 @@
-﻿using DTOs.Inventory;
-using DTOs.Inventory.Colour;
+﻿using DTOs.Inventory.Colour;
 using EntityFramework.Exceptions.Common;
 using ErrorHandling;
 using ErrorHandling.Service;
-using Inventory.Core.Features.BrandFeatures;
 using Inventory.Core.Interfaces;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using Models;
+using Models.Inventory;
 
 namespace Inventory.Core.Features.ColourFeatures;
 
@@ -20,7 +18,7 @@ namespace Inventory.Core.Features.ColourFeatures;
 /// </remarks>
 public record CreateColourCommand : IRequest<Result<Unit>>
 {
-    public string Name = string.Empty;
+    public string Name { get; private init; } = string.Empty;
 
     public static CreateColourCommand FromDto(CreateColourRequest request) => new()
     {

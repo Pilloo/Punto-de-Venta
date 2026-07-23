@@ -12,8 +12,10 @@ using Microsoft.AspNetCore.Identity;
 using AuthModule.Core.Extensions;
 using AuthModule.Presentation.Grpc;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
+using Models.Auth;
 using Serilog.Templates;
 using Serilog.Enrichers.Span;
+using Serilog.Sinks.OpenTelemetry;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,6 +31,11 @@ Log.Logger = new LoggerConfiguration()
              .Enrich.FromLogContext()
              .Enrich.WithSpan()
              .WriteTo.Console(formatter)
+             .WriteTo.OpenTelemetry(options => 
+             {
+                 options.Endpoint = Environment.GetEnvironmentVariable("OTEL_EXPORTER_OTLP_ENDPOINT");
+                 options.Protocol = OtlpProtocol.Grpc;
+             })
              .WriteTo.File(formatter: formatter, path: "/app/logs/applog-.txt", rollingInterval: RollingInterval.Day)
              .CreateLogger();
 

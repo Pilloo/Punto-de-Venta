@@ -1,5 +1,5 @@
-﻿using Models;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
+using Models.Auth;
 
 namespace AuthModule.Core.Interfaces
 {

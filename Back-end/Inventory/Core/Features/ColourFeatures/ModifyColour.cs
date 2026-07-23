@@ -1,35 +1,27 @@
-﻿using DTOs.Inventory;
-using DTOs.Inventory.Colour;
+﻿using DTOs.Inventory.Colour;
 using ErrorHandling;
 using ErrorHandling.Service;
-using Inventory.Core.Features.BrandFeatures;
 using Inventory.Core.Interfaces;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using Models;
+using Models.Inventory;
 
 namespace Inventory.Core.Features.ColourFeatures;
 
 /// <summary>
-/// Represents a command to modify the details of an existing colour in the system.
+/// Represents a command to modify a colour entity in the system.
 /// </summary>
 /// <remarks>
-/// <para>
-/// This command is used to update the information of a colour such as its name using the colour's unique identifier.
-/// </para>
-/// <para>
-/// The command follows the CQRS (Command Query Responsibility Segregation) pattern and is processed by
-/// a dedicated handler.
-/// </para>
+/// This command is used within a CQRS pattern to update the properties of an existing colour entity.
+/// It encapsulates the data required to perform the modification and is processed by an appropriate handler.
 /// </remarks>
 /// <example>
-/// The process of handling this command can result in either a successful execution or a failure with
-/// structured error details provided by the <see cref="Result"/> class.
+/// This command is typically dispatched using a mediator in order to trigger the corresponding handler logic.
 /// </example>
 public record ModifyColourCommand : IRequest<Result<Unit>>
 {
-    public Guid Id { get; init; }
-    public string Name { get; init; } = string.Empty;
+    public Guid Id { get; private init; }
+    public string Name { get; private init; } = string.Empty;
 
     public static ModifyColourCommand FromDto(Guid id, ModifyColourRequest request) => new()
     {

@@ -1,12 +1,12 @@
-﻿using ErrorHandling;
+﻿using DTOs.Users;
+using ErrorHandling;
 using ErrorHandling.Service;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
-using Models;
-using DTOs.Users;
+using Models.Auth;
 
-namespace AuthModule.Core.Features;
+namespace AuthModule.Core.Features.UserFeatures;
 
 /// <summary>
 /// Represents a command to register a new user in the authentication system.
@@ -21,13 +21,13 @@ namespace AuthModule.Core.Features;
 /// </remarks>
 public record RegisterCommand : IRequest<Result<Unit>>
 {
-    public string UserName { get; init; } = string.Empty;
+    public string UserName { get; private init; } = string.Empty;
 
-    public string GivenName { get; init; } = string.Empty;
+    public string GivenName { get; private init; } = string.Empty;
 
-    public string LastName { get; init; } = string.Empty;
+    public string LastName { get; private init; } = string.Empty;
 
-    public string Password { get; init; } = string.Empty;
+    public string Password { get; private init; } = string.Empty;
 
     public static RegisterCommand FromDto(RegisterRequest request) => new()
     {

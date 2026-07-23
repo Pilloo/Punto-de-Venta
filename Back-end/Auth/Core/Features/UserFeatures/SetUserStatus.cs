@@ -1,15 +1,15 @@
-﻿using AuthModule.Core.Interfaces;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Security.Claims;
+using AuthModule.Core.Interfaces;
+using DTOs.Users;
 using ErrorHandling;
 using ErrorHandling.Service;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using Models;
-using System.ComponentModel.DataAnnotations;
-using System.Security.Claims;
-using DTOs.Users;
+using Models.Auth;
 
-namespace AuthModule.Core.Features;
+namespace AuthModule.Core.Features.UserFeatures;
 
 /// <summary>
 /// Command to update the status of a user in the system.
@@ -20,8 +20,8 @@ namespace AuthModule.Core.Features;
 /// </remarks>
 public class SetUserStatusCommand : IRequest<Result<Unit>>
 {
-    [Required] public Guid UserId { get; init; } = Guid.Empty;
-    [Required] public bool Status { get; init; }
+    [Required] public Guid UserId { get; private init; } = Guid.Empty;
+    [Required] public bool Status { get; private init; }
 
     public static SetUserStatusCommand FromDto(SetUserStatusRequest request) => new()
     {

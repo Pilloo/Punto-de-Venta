@@ -1,4 +1,5 @@
 ﻿using Models;
+using Models.Auth;
 
 namespace DTOs.Users
 {

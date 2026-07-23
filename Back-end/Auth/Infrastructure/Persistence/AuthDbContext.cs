@@ -1,8 +1,8 @@
-﻿using Models;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using AuthModule.Core.Domain;
 using Microsoft.AspNetCore.Identity;
+using Models.Auth;
 
 namespace AuthModule.Infrastructure.Persistence
 {

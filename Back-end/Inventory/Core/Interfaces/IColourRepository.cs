@@ -1,5 +1,6 @@
 ﻿using System.Linq.Expressions;
 using Models;
+using Models.Inventory;
 
 namespace Inventory.Core.Interfaces;
 
